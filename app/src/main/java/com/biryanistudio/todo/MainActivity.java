@@ -5,7 +5,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         tabs = (TabLayout) findViewById(R.id.tabs);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         clear = (FloatingActionButton) findViewById(R.id.clear);
-        clear.setVisibility(View.GONE);
+        clear.hide();
         FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(fragmentPagerAdapter);
         tabs.setupWithViewPager(viewPager);
@@ -35,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        clear.setVisibility(View.GONE);
+                        clear.hide();
                     case 1:
-                        clear.setVisibility(View.VISIBLE);
+                        clear.show();
                 }
             }
 
