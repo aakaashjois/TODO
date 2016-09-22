@@ -4,9 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-/**
- * Created by Aakaash on 19/09/16 at 3:53 PM.
- */
+import com.biryanistudio.todo.Completed.CompletedFragment;
+import com.biryanistudio.todo.Pending.PendingFragment;
 
 class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
