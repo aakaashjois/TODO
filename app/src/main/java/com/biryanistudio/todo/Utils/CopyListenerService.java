@@ -1,22 +1,16 @@
-package com.biryanistudio.todo;
+package com.biryanistudio.todo.Utils;
 
 import android.app.Service;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
-import com.biryanistudio.todo.Db.TasksContract;
-import com.biryanistudio.todo.Db.TasksDbHelper;
-
-/**
- * Created by Sravan on 19-Sep-16.
- */
 public class CopyListenerService extends Service implements
         ClipboardManager.OnPrimaryClipChangedListener {
     private final String TAG = CopyListenerService.class.getSimpleName();
@@ -56,15 +50,12 @@ public class CopyListenerService extends Service implements
     }
 
     private void saveTextToDatabase(String text) {
-        TasksDbHelper dbHelper = new TasksDbHelper(this);
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(TasksContract.TaskEntry.COLUMN_NAME_TASK, text);
-        values.put(TasksContract.TaskEntry.COLUMN_NAME_TIME_STAMP, String.valueOf(System.currentTimeMillis()));
-        long newRowId = database.insert(TasksContract.TaskEntry.TABLE_NAME, null, values);
-        Log.i(TAG, "saveTextToDatabase: " + newRowId);
-        database.close();
-        dbHelper.close();
+        long newRowId = DbTransactions.writeTasks(this, text);
+        if (newRowId != -1) {
+            Toast toast = Toast.makeText(this, "Task added!", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
         clipboardManager.addPrimaryClipChangedListener(this);
     }
 }

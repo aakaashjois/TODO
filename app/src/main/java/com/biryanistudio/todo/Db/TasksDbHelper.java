@@ -3,12 +3,27 @@ package com.biryanistudio.todo.Db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 
 public class TasksDbHelper extends SQLiteOpenHelper {
+    private static TasksDbHelper dbHelper;
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Tasks.db";
 
-    public TasksDbHelper(Context context) {
+    public static TasksDbHelper getInstance(@NonNull Context context) {
+        if (dbHelper == null) {
+            return new TasksDbHelper(context);
+        } else {
+            return dbHelper;
+        }
+    }
+
+    public static void closeDbHelper() {
+        dbHelper.getReadableDatabase().close();
+        dbHelper.close();
+    }
+
+    private TasksDbHelper(Context context) {
         // If you change the database schema, you must increment the database version.
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }

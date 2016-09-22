@@ -1,4 +1,4 @@
-package com.biryanistudio.todo;
+package com.biryanistudio.todo.Ui;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,17 +9,22 @@ import com.biryanistudio.todo.Pending.PendingFragment;
 
 class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
+    final private PendingFragment pendingFragment;
+    final private CompletedFragment completedFragment;
+
     FragmentPagerAdapter(FragmentManager fm) {
         super(fm);
+        pendingFragment = new PendingFragment();
+        completedFragment = new CompletedFragment();
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new PendingFragment();
+                return pendingFragment;
             case 1:
-                return new CompletedFragment();
+                return completedFragment;
         }
         return null;
     }

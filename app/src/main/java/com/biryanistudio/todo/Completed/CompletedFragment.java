@@ -9,10 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.Ui.MainActivity;
 
-public class CompletedFragment extends Fragment {
+public class CompletedFragment extends Fragment implements MainActivity.ITasksUpdated {
 
     private CompletedPresenter presenter;
+    private RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -24,9 +26,22 @@ public class CompletedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        presenter.setRecyclerViewAdapter(recyclerView);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.setRecyclerViewAdapter(recyclerView);
+    }
+
+    @Override
+    public void tasksUpdated() {
+        presenter.clearCompletedTasks();
+    }
+
+    public void updateRecyclerView() {
+        presenter.setRecyclerViewAdapter(recyclerView);
+    }
 }

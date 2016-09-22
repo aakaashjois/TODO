@@ -1,22 +1,23 @@
-package com.biryanistudio.todo.Completed;
+package com.biryanistudio.todo.Ui;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
+import com.biryanistudio.todo.Db.TasksContract;
 
-public class CompletedAdapter extends RecyclerView.Adapter<CompletedAdapter.ViewHolder> {
-    private List<String> data;
+public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder> {
+    private Cursor cursor;
 
-    public CompletedAdapter(@NonNull List<String> data) {
-        this.data = data;
+    public TasksAdapter(@NonNull Cursor cursor) {
+        this.cursor = cursor;
     }
 
     @Override
-    public CompletedAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TasksAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         TextView textView = (TextView) LayoutInflater.from(parent.getContext())
                 .inflate(android.R.layout.simple_list_item_1, parent, false);
         return new ViewHolder(textView);
@@ -24,12 +25,13 @@ public class CompletedAdapter extends RecyclerView.Adapter<CompletedAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.textView.setText(data.get(position));
+        cursor.moveToPosition(position);
+        holder.textView.setText(cursor.getString(cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TASK)));
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return cursor.getCount();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -39,5 +41,10 @@ public class CompletedAdapter extends RecyclerView.Adapter<CompletedAdapter.View
             super(textView);
             this.textView = textView;
         }
+    }
+
+    public void swapCursor(@NonNull Cursor newCursor) {
+        this.cursor = newCursor;
+        notifyDataSetChanged();
     }
 }
