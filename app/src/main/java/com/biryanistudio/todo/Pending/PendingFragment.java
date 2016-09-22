@@ -1,7 +1,5 @@
 package com.biryanistudio.todo.Pending;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,13 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.biryanistudio.todo.Db.TasksContract;
-import com.biryanistudio.todo.Db.TasksDbHelper;
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.Ui.MainActivity;
 
-public class PendingFragment extends Fragment {
+public class PendingFragment extends Fragment implements MainActivity.ITasksUpdated {
 
     private PendingPresenter presenter;
+    private RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,9 +26,18 @@ public class PendingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        presenter.setRecyclerViewAdapter(recyclerView);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.setRecyclerViewAdapter(recyclerView);
+    }
+
+    @Override
+    public void tasksUpdated() {
+        presenter.clearPendingTasks();
+    }
 }
