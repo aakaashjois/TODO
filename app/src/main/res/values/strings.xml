@@ -3,4 +3,6 @@
     <string name="text_title">//TODO</string>
     <string name="text_subtitle">What would you like to do today?</string>
     <string name="button_help">help</string>
+    <string name="pending_tab_title">Pending Tasks</string>
+    <string name="completed_tab_title">Completed Tasks</string>
 </resources>

@@ -13,8 +13,8 @@ import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.Toast;
 
-import com.biryanistudio.todo.Completed.CompletedFragment;
-import com.biryanistudio.todo.Pending.PendingFragment;
+import com.biryanistudio.todo.Fragments.CompletedFragment;
+import com.biryanistudio.todo.Fragments.PendingFragment;
 import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.Utils.CopyListenerService;
 
@@ -23,11 +23,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CoordinatorLayout coordinatorLayout;
     private ViewPager viewPager;
     private FragmentPagerAdapter fragmentPagerAdapter;
-    private Snackbar snackbar;
-
-    public interface ITasksUpdated {
-        void tasksUpdated();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         final FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.clear);
-        fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager());
+        fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(fragmentPagerAdapter);
         tabs.setupWithViewPager(viewPager);
         floatingActionButton.setOnClickListener(this);
@@ -55,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         final int currentTab = viewPager.getCurrentItem();
         final String action = currentTab == 0 ? "Completed all tasks?" : "Clear all tasks?";
-        snackbar = Snackbar.make(coordinatorLayout, action, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, action, Snackbar.LENGTH_LONG);
         snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         snackbar.setAction("Clear", new View.OnClickListener() {
@@ -71,5 +66,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         snackbar.show();
+    }
+
+    public interface ITasksUpdated {
+        void tasksUpdated();
     }
 }
