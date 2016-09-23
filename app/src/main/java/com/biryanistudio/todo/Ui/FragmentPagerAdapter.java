@@ -1,21 +1,28 @@
 package com.biryanistudio.todo.Ui;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.biryanistudio.todo.Completed.CompletedFragment;
-import com.biryanistudio.todo.Pending.PendingFragment;
+import com.biryanistudio.todo.Fragments.CompletedFragment;
+import com.biryanistudio.todo.Fragments.PendingFragment;
+import com.biryanistudio.todo.R;
 
 class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
+    final private Context context;
     final private PendingFragment pendingFragment;
     final private CompletedFragment completedFragment;
 
-    FragmentPagerAdapter(FragmentManager fm) {
+    private final int tabCount;
+
+    FragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
+        this.context = context;
         pendingFragment = new PendingFragment();
         completedFragment = new CompletedFragment();
+        tabCount = 2;
     }
 
     @Override
@@ -31,16 +38,16 @@ class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return tabCount;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "Pending Tasks";
+                return context.getString(R.string.pending_tab_title);
             case 1:
-                return "Completed Tasks";
+                return context.getString(R.string.completed_tab_title);
         }
         return super.getPageTitle(position);
     }

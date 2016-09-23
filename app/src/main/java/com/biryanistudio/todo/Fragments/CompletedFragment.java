@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.Completed;
+package com.biryanistudio.todo.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,13 +13,13 @@ import com.biryanistudio.todo.Ui.MainActivity;
 
 public class CompletedFragment extends Fragment implements MainActivity.ITasksUpdated {
 
-    private CompletedPresenter presenter;
+    private FragmentPresenter presenter;
     private RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new CompletedPresenter(this);
+        presenter = new FragmentPresenter(this);
     }
 
     @Nullable
