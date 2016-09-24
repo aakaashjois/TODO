@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
 
 public class CopyListenerService extends Service implements
         ClipboardManager.OnPrimaryClipChangedListener {
@@ -51,9 +49,7 @@ public class CopyListenerService extends Service implements
     private void saveTextToDatabase(String text) {
         long newRowId = DbTransactions.writeTask(this, text);
         if (newRowId != -1) {
-            Toast toast = Toast.makeText(this, "Task added!", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            UiUtils.createToast(getApplicationContext(), "TODO added!");
         }
         clipboardManager.addPrimaryClipChangedListener(this);
     }

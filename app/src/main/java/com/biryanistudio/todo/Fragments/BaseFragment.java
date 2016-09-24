@@ -24,7 +24,7 @@ public abstract class BaseFragment extends Fragment implements MainActivity.ITas
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        textView = (TextView) view.findViewById(R.id.text_view);
+        textView = ( TextView ) view.findViewById(R.id.empty_view);
         return view;
     }
 
