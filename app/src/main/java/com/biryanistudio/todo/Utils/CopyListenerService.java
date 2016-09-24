@@ -15,7 +15,6 @@ public class CopyListenerService extends Service implements
         ClipboardManager.OnPrimaryClipChangedListener {
     private final String TAG = CopyListenerService.class.getSimpleName();
     private ClipboardManager clipboardManager;
-    // TODO Fix multiple calls
 
     @Nullable
     @Override
@@ -50,7 +49,7 @@ public class CopyListenerService extends Service implements
     }
 
     private void saveTextToDatabase(String text) {
-        long newRowId = DbTransactions.writeTasks(this, text);
+        long newRowId = DbTransactions.writeTask(this, text);
         if (newRowId != -1) {
             Toast toast = Toast.makeText(this, "Task added!", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);

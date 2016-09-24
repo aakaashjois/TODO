@@ -2,46 +2,23 @@ package com.biryanistudio.todo.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.biryanistudio.todo.R;
-import com.biryanistudio.todo.Ui.MainActivity;
-
-public class CompletedFragment extends Fragment implements MainActivity.ITasksUpdated {
-
-    private FragmentPresenter presenter;
-    private RecyclerView recyclerView;
+public class CompletedFragment extends BaseFragment {
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        presenter = new FragmentPresenter(this);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        return view;
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter = new FragmentPresenter(this, recyclerView, textView);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        presenter.setRecyclerViewAdapter(recyclerView);
-    }
-
-    @Override
-    public void tasksUpdated() {
+    public void clearAllTasks() {
         presenter.clearCompletedTasks();
     }
 
-    public void updateRecyclerView() {
-        presenter.setRecyclerViewAdapter(recyclerView);
+    public void updateTasks() {
+        presenter.setRecyclerViewAdapter();
+        presenter.setTextViewText();
     }
 }

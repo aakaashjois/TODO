@@ -9,7 +9,7 @@ import com.biryanistudio.todo.Fragments.CompletedFragment;
 import com.biryanistudio.todo.Fragments.PendingFragment;
 import com.biryanistudio.todo.R;
 
-class FragmentPagerAdapter extends FragmentStatePagerAdapter {
+public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     final private Context context;
     final private PendingFragment pendingFragment;
