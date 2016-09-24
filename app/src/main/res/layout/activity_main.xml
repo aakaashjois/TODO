@@ -27,45 +27,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/text_title"
-                    android:textSize="@dimen/text_title_size"
-                    app:layout_collapseMode="parallax"/>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/subtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/title"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:hint="@string/text_subtitle"
-                    app:errorEnabled="true"
-                    app:errorTextAppearance="@style/TextAppearance.AppCompat.Small"
-                    app:hintAnimationEnabled="true"
-                    app:hintEnabled="true"
-                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:layout_collapseMode="pin">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="casual"
-                        android:imeOptions="actionDone"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textIsSelectable="false"/>
-
-                </android.support.design.widget.TextInputLayout>
-
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -79,15 +40,62 @@
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/button_help"
                     android:src="@drawable/ic_help_button"
-                    app:layout_collapseMode="parallax"/>
+                    app:layout_collapseMode="parallax"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/text_title"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    app:layout_collapseMode="parallax"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/title"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:hint="@string/text_subtitle"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="140"
+                    app:counterOverflowTextAppearance="@style/HandWritingCounterOverflowText"
+                    app:counterTextAppearance="@style/HandWritingCounterText"
+                    app:errorEnabled="true"
+                    app:errorTextAppearance="@style/TextAppearance.AppCompat.Small"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Small"
+                    app:layout_collapseMode="pin"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="casual"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textIsSelectable="false"/>
+
+                </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabs"
                     style="@style/HandWritingTabLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/subtitle"
                     app:layout_collapseMode="pin"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
                     app:tabGravity="center"
                     app:tabIndicatorColor="@color/colorPrimary"
                     app:tabMode="fixed"

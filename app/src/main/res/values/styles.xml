@@ -22,4 +22,12 @@
         <item name="android:fontFamily">casual</item>
     </style>
 
+    <style name="HandWritingCounterText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:fontFamily">casual</item>
+    </style>
+
+    <style name="HandWritingCounterOverflowText">
+        <item name="android:textColor">@android:color/holo_red_light</item>
+    </style>
+
 </resources>
