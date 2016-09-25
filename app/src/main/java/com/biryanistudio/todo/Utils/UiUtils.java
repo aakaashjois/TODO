@@ -1,11 +1,9 @@
 package com.biryanistudio.todo.Utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,14 +18,11 @@ public class UiUtils {
 	public static Toast createToast(Context context, String message) {
 		Toast toast = new Toast(context);
 		//TODO: Cannot get custom toasts to work from Service
-		View rootView = (( Activity ) context).getWindow()
-				.getDecorView().findViewById(android.R.id.content);
-		View toastLayout = LayoutInflater.from(context)
-				.inflate(R.layout.toast_message,
-						( ViewGroup ) rootView.findViewById(R.id.toast_layout));
-		TextView toastMessage = ( TextView ) toastLayout.findViewById(R.id.toast_message_text);
+		LayoutInflater inflater = ( LayoutInflater ) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View toastRoot = inflater.inflate(R.layout.toast_message, null, false);
+		TextView toastMessage = ( TextView ) toastRoot.findViewById(R.id.toast_message_text);
 		toastMessage.setText(message);
-		toast.setView(toastLayout);
+		toast.setView(toastRoot);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.setDuration(Toast.LENGTH_SHORT);
 		return toast;
