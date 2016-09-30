@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.Db;
+package com.biryanistudio.todo.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.Fragments;
+package com.biryanistudio.todo.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
-import com.biryanistudio.todo.Ui.MainActivity;
+import com.biryanistudio.todo.ui.MainActivity;
 
 
 public abstract class BaseFragment extends Fragment implements MainActivity.ITasksUpdated {

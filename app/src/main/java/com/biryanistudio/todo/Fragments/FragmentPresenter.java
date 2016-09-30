@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.Fragments;
+package com.biryanistudio.todo.fragments;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
-import com.biryanistudio.todo.Ui.TasksAdapter;
-import com.biryanistudio.todo.Utils.DbTransactions;
+import com.biryanistudio.todo.ui.TasksAdapter;
+import com.biryanistudio.todo.utils.DbTransactions;
 
 
 class FragmentPresenter {

@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.Fragments;
+package com.biryanistudio.todo.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

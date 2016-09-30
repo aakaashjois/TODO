@@ -1,10 +1,10 @@
-package com.biryanistudio.todo.Fragments;
+package com.biryanistudio.todo.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.biryanistudio.todo.Ui.MainActivity;
+import com.biryanistudio.todo.ui.MainActivity;
 
 public class PendingFragment extends BaseFragment {
 

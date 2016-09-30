@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.Db;
+package com.biryanistudio.todo.db;
 
 import android.provider.BaseColumns;
 

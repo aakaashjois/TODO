@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.Ui;
+package com.biryanistudio.todo.ui;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -12,11 +12,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.biryanistudio.todo.Db.TasksContract;
-import com.biryanistudio.todo.Fragments.BaseFragment;
-import com.biryanistudio.todo.Fragments.PendingFragment;
 import com.biryanistudio.todo.R;
-import com.biryanistudio.todo.Utils.DbTransactions;
+import com.biryanistudio.todo.db.TasksContract;
+import com.biryanistudio.todo.fragments.BaseFragment;
+import com.biryanistudio.todo.fragments.PendingFragment;
+import com.biryanistudio.todo.utils.DbTransactions;
 
 import java.util.ArrayList;
 import java.util.List;

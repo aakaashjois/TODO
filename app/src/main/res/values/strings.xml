@@ -11,4 +11,5 @@
     <string name="completed_tab_title">Completed Tasks</string>
     <string name="complete_all_todos">Completed all TODOs?</string>
     <string name="clear_all_todos">Clear all TODOs?</string>
+    <string name="todo_added">"TODO Added: %s"</string>
 </resources>

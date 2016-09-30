@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.Ui;
+package com.biryanistudio.todo.ui;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -13,10 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.biryanistudio.todo.Fragments.BaseFragment;
-import com.biryanistudio.todo.Fragments.CompletedFragment;
 import com.biryanistudio.todo.R;
-import com.biryanistudio.todo.Utils.CopyListenerService;
+import com.biryanistudio.todo.fragments.BaseFragment;
+import com.biryanistudio.todo.fragments.CompletedFragment;
+import com.biryanistudio.todo.utils.CopyListenerService;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
