@@ -40,6 +40,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		final FloatingActionButton fab = ( FloatingActionButton ) findViewById(R.id.clear);
 		fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), this);
 		viewPager.setAdapter(fragmentPagerAdapter);
+		viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+			@Override
+			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+			}
+
+			@Override
+			public void onPageSelected(int position) {
+				switch ( position ) {
+					case 0:
+						fab.setImageResource(R.drawable.ic_done_all);
+						break;
+					case 1:
+						fab.setImageResource(R.drawable.ic_clear_all);
+						break;
+				}
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int state) {
+
+			}
+		});
 		tabs.setupWithViewPager(viewPager);
 		fab.setOnClickListener(this);
 	}
@@ -53,12 +76,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		snackbar.setAction("Yes", new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				if ( currentTab == 0 )
+					(( BaseFragment ) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
+				else
+					(( BaseFragment ) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
 				snackbar.dismiss();
 				createSnackBar("Cleared", Snackbar.LENGTH_SHORT).show();
-				if ( currentTab == 0 ) {
-					(( BaseFragment ) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
-				}
-				(( BaseFragment ) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
 			}
 		});
 		snackbar.show();
