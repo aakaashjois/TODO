@@ -6,9 +6,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 
 public class TasksDbHelper extends SQLiteOpenHelper {
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "Tasks.db";
+    //TODO: This dbHelper is never used.
     private static TasksDbHelper dbHelper;
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Tasks.db";
+
+    private TasksDbHelper(Context context) {
+        // If you change the database schema, you must increment the database version.
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
 
     public static TasksDbHelper getInstance(@NonNull Context context) {
         if (dbHelper == null) {
@@ -18,14 +24,10 @@ public class TasksDbHelper extends SQLiteOpenHelper {
         }
     }
 
+    //TODO: We are not calling this method anywhere.
     public static void closeDbHelper() {
         dbHelper.getReadableDatabase().close();
         dbHelper.close();
-    }
-
-    private TasksDbHelper(Context context) {
-        // If you change the database schema, you must increment the database version.
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     public void onCreate(SQLiteDatabase db) {

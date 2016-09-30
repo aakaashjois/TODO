@@ -45,7 +45,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         holder.checkBox.setTag(position);
         holder.checkBox.setOnCheckedChangeListener(this);
         //TODO: Add animations for recyclerview
-        // TODO: If user checks last item, animation is cut short by textview being set to visible
+        //TODO: If user checks last item, animation is cut short by textview being set to visible
     }
 
     @Override
@@ -64,18 +64,22 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         handleItemChecked(pos);
     }
 
-    void convertCursorToList(@NonNull final Cursor cursor) {
+    private void convertCursorToList(@NonNull final Cursor cursor) {
         cursor.moveToFirst();
         do {
-            Log.i(getClass().getSimpleName(), cursor.getString(cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TASK)));
-            tasks.add(cursor.getString(cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TASK)));
-            pending.add(cursor.getString(cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_PENDING)));
-            timestamps.add(cursor.getString(cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TIME_STAMP)));
+            Log.i(getClass().getSimpleName(),
+                    cursor.getString(cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TASK)));
+            tasks.add(cursor.getString(
+                    cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TASK)));
+            pending.add(cursor.getString(
+                    cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_PENDING)));
+            timestamps.add(cursor.getString(
+                    cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TIME_STAMP)));
         } while (cursor.moveToNext());
         cursor.close();
     }
 
-    void handleItemChecked(@NonNull final int pos) {
+    private void handleItemChecked(final int pos) {
         String isPending = pending.get(pos);
         String task = tasks.get(pos);
         tasks.remove(pos);

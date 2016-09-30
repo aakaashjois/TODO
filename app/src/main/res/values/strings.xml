@@ -9,4 +9,6 @@
 
     <string name="pending_tab_title">Pending Tasks</string>
     <string name="completed_tab_title">Completed Tasks</string>
+    <string name="complete_all_todos">Completed all TODOs?</string>
+    <string name="clear_all_todos">Clear all TODOs?</string>
 </resources>

@@ -23,8 +23,8 @@ public class DbTransactions {
         return readAllTasks(context, new String[]{"no"});
     }
 
-    public static Cursor readAllTasks(@NonNull final Context context,
-                                      @NonNull final String[] selectionArgs) {
+    private static Cursor readAllTasks(@NonNull final Context context,
+                                       @NonNull final String[] selectionArgs) {
         final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
         final SQLiteDatabase database = dbHelper.getReadableDatabase();
         final String[] projection = null;
@@ -36,7 +36,7 @@ public class DbTransactions {
         return cursor;
     }
 
-    public static long writeTask(@NonNull final Context context, @NonNull final String text) {
+    static long writeTask(@NonNull final Context context, @NonNull final String text) {
         final boolean canProceed = checkForDuplicacy(context, text);
         if (canProceed) {
             final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);

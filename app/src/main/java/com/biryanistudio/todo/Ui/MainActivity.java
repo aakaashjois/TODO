@@ -17,7 +17,6 @@ import com.biryanistudio.todo.Fragments.BaseFragment;
 import com.biryanistudio.todo.Fragments.CompletedFragment;
 import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.Utils.CopyListenerService;
-import com.biryanistudio.todo.Utils.UiUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -38,17 +37,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		coordinatorLayout = ( CoordinatorLayout ) findViewById(R.id.activity_list);
 		final TabLayout tabs = ( TabLayout ) findViewById(R.id.tabs);
 		viewPager = ( ViewPager ) findViewById(R.id.viewPager);
-		final FloatingActionButton floatingActionButton = ( FloatingActionButton ) findViewById(R.id.clear);
+		final FloatingActionButton fab = ( FloatingActionButton ) findViewById(R.id.clear);
 		fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), this);
 		viewPager.setAdapter(fragmentPagerAdapter);
 		tabs.setupWithViewPager(viewPager);
-		floatingActionButton.setOnClickListener(this);
+		fab.setOnClickListener(this);
 	}
 
 	@Override
 	public void onClick(View view) {
 		final int currentTab = viewPager.getCurrentItem();
-		createSnackBar(currentTab).show();
+		final String action = currentTab == 0 ?
+				getString(R.string.complete_all_todos) : getString(R.string.clear_all_todos);
+		final Snackbar snackbar = createSnackBar(action, Snackbar.LENGTH_LONG);
+		snackbar.setAction("Yes", new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				snackbar.dismiss();
+				createSnackBar("Cleared", Snackbar.LENGTH_SHORT).show();
+				if ( currentTab == 0 ) {
+					(( BaseFragment ) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
+				}
+				(( BaseFragment ) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
+			}
+		});
+		snackbar.show();
+		//TODO: Check if snackbar animations work.
 	}
 
 	public void updateCompletedFragment() {
@@ -56,30 +70,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		fragment.updateTasks();
 	}
 
-	private Snackbar createSnackBar(final int currentTab) {
-		final String action = currentTab == 0 ? "Completed all TODOs?" : "Clear all TODOs?";
-		Snackbar snackbar = Snackbar.make(coordinatorLayout, action, Snackbar.LENGTH_LONG);
+	private Snackbar createSnackBar(final String action, final int snackbarLength) {
+		Snackbar snackbar = Snackbar.make(coordinatorLayout, action, snackbarLength);
 		View snackbarView = snackbar.getView();
 		snackbarView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-		TextView textView = ( TextView ) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+		TextView textView = ( TextView ) snackbarView
+				.findViewById(android.support.design.R.id.snackbar_text);
 		textView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-		TextView actionView = ( TextView ) snackbarView.findViewById(android.support.design.R.id.snackbar_action);
+		TextView actionView = ( TextView ) snackbarView
+				.findViewById(android.support.design.R.id.snackbar_action);
 		actionView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 		actionView.setTypeface(Typeface.create("casual", Typeface.BOLD));
-		snackbar.setAction("Yes", new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				UiUtils.createToast(MainActivity.this, "Cleared").show();
-				if ( currentTab == 0 ) {
-					(( BaseFragment ) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
-				}
-				(( BaseFragment ) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
-			}
-		});
 		return snackbar;
 	}
 
 	public interface ITasksUpdated {
+		//TODO: What does this function do? It is never used.
 		void clearAllTasks();
 	}
 }

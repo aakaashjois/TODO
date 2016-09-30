@@ -9,12 +9,11 @@ import com.biryanistudio.todo.Fragments.CompletedFragment;
 import com.biryanistudio.todo.Fragments.PendingFragment;
 import com.biryanistudio.todo.R;
 
-public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
+class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     final private Context context;
     final private PendingFragment pendingFragment;
     final private CompletedFragment completedFragment;
-
     private final int tabCount;
 
     FragmentPagerAdapter(FragmentManager fm, Context context) {
