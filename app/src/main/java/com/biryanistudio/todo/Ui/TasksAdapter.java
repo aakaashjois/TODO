@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
-        implements CompoundButton.OnCheckedChangeListener {
+        implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
     private Fragment fragment;
     private List<String> tasks = new ArrayList<>();
     private List<String> pending = new ArrayList<>();
@@ -44,11 +45,16 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.task.setText(tasks.get(position));
         holder.checkBox.setTag(tasks.get(position));
+        holder.checkBox.setAlpha(1f);
+        holder.task.setAlpha(1f);
         if (pending.get(position).equalsIgnoreCase("no")) {
             holder.checkBox.setChecked(true);
+            holder.checkBox.setAlpha(0.7f);
+            holder.task.setAlpha(0.7f);
             holder.task.setPaintFlags(holder.task.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
         holder.checkBox.setOnCheckedChangeListener(this);
+        holder.delete.setOnClickListener(this);
     }
 
     @Override
@@ -98,14 +104,21 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
             ((BaseFragment) fragment).updateRecyclerView();
     }
 
+    @Override
+    public void onClick(View view) {
+        //TODO: Handle deleting of item.
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView task;
         CheckBox checkBox;
+        ImageButton delete;
 
         ViewHolder(View itemView) {
             super(itemView);
             task = (TextView) itemView.findViewById(R.id.task);
             checkBox = (CheckBox) itemView.findViewById(R.id.check_box);
+            delete = ( ImageButton ) itemView.findViewById(R.id.delete);
         }
     }
 }
