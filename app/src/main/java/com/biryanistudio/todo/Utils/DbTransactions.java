@@ -55,19 +55,32 @@ public class DbTransactions {
         }
     }
 
-    public static long updatePendingTaskAsCompleted(@NonNull final Context context,
-                                                    @NonNull final String task) {
+    public static long updateTaskAsCompleted(@NonNull final Context context,
+                                             @NonNull final String task) {
+        long updateRowId = updateTaskStatus(context, task, true);
+        Log.i(TAG, "updateTaskAsCompleted: " + updateRowId);
+        return updateRowId;
+    }
+
+    public static long updateTaskAsPending(@NonNull final Context context, @NonNull final String task) {
+        long updateRowId = updateTaskStatus(context, task, false);
+        Log.i(TAG, "updateTaskAsPending: " + updateRowId);
+        return updateRowId;
+    }
+
+    private static long updateTaskStatus(@NonNull final Context context, @NonNull final String task,
+                                         final boolean pending) {
         final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
+        final String taskStatus = pending ? "no" : "yes";
+        final String currentTaskStatus = pending ? "yes" : "no";
         ContentValues contentValues = new ContentValues();
-        contentValues.put(TasksContract.TaskEntry.COLUMN_NAME_PENDING, "no");
+        contentValues.put(TasksContract.TaskEntry.COLUMN_NAME_PENDING, taskStatus);
         final String where = TasksContract.TaskEntry.COLUMN_NAME_PENDING + " = ? AND "
                 + TasksContract.TaskEntry.COLUMN_NAME_TASK + " = ?";
-        final String[] whereArgs = new String[]{"yes", task};
-        final long updateRowId = database.update(TasksContract.TaskEntry.TABLE_NAME, contentValues, where,
+        final String[] whereArgs = new String[]{currentTaskStatus, task};
+        return database.update(TasksContract.TaskEntry.TABLE_NAME, contentValues, where,
                 whereArgs);
-        Log.i(TAG, "updatePendingTaskAsCompleted: " + updateRowId);
-        return updateRowId;
     }
 
     public static long updateAllPendingTasksAsCompleted(@NonNull final Context context) {
@@ -77,21 +90,10 @@ public class DbTransactions {
         contentValues.put(TasksContract.TaskEntry.COLUMN_NAME_PENDING, "no");
         final String where = TasksContract.TaskEntry.COLUMN_NAME_PENDING + " = ?";
         final String[] whereArgs = new String[]{"yes"};
-        final long updateRowId = database.update(TasksContract.TaskEntry.TABLE_NAME, contentValues, where,
+        final long updatedRowIds = database.update(TasksContract.TaskEntry.TABLE_NAME, contentValues, where,
                 whereArgs);
-        Log.i(TAG, "updateAllPendingTasksAsCompleted: " + updateRowId);
-        return updateRowId;
-    }
-
-    public static long deleteCompletedTask(@NonNull final Context context, @NonNull final String task) {
-        final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
-        final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        final String where = TasksContract.TaskEntry.COLUMN_NAME_PENDING + " = ? AND "
-                + TasksContract.TaskEntry.COLUMN_NAME_TASK + " = ?";
-        final String[] whereArgs = new String[]{"no", task};
-        final long delRowId = database.delete(TasksContract.TaskEntry.TABLE_NAME, where, whereArgs);
-        Log.i(TAG, "deleteTasks: " + delRowId);
-        return delRowId;
+        Log.i(TAG, "updateAllPendingTasksAsCompleted: " + updatedRowIds);
+        return updatedRowIds;
     }
 
     public static long deleteAllCompletedTasks(@NonNull final Context context) {
@@ -99,9 +101,9 @@ public class DbTransactions {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
         final String where = TasksContract.TaskEntry.COLUMN_NAME_PENDING + " = ?";
         final String[] whereArgs = new String[]{"no"};
-        final long delRowId = database.delete(TasksContract.TaskEntry.TABLE_NAME, where, whereArgs);
-        Log.i(TAG, "deleteTasks: " + delRowId);
-        return delRowId;
+        final long deletedRowIds = database.delete(TasksContract.TaskEntry.TABLE_NAME, where, whereArgs);
+        Log.i(TAG, "deleteAllCompletedTasks: " + deletedRowIds);
+        return deletedRowIds;
     }
 
     private static boolean checkForDuplicacy(@NonNull final Context context, @NonNull final String task) {
@@ -114,6 +116,7 @@ public class DbTransactions {
                 TasksContract.TaskEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
         final boolean duplicate = cursor.getCount() == 0;
         cursor.close();
+        Log.i(TAG, "checkForDuplicacy: " + duplicate);
         return duplicate;
     }
 }

@@ -19,6 +19,11 @@ public class PendingFragment extends BaseFragment {
         presenter.clearPendingTasks();
     }
 
+    public void updateTasks() {
+        presenter.setRecyclerViewAdapter();
+        presenter.setTextViewText();
+    }
+
     public void updateCompletedFragment() {
         ((MainActivity) getActivity()).updateCompletedFragment();
     }
