@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
 			}
 
 			@Override
@@ -107,8 +106,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		return snackbar;
 	}
 
-	public interface ITasksUpdated {
-		//TODO: What does this function do? It is never used.
-		void clearAllTasks();
-	}
 }

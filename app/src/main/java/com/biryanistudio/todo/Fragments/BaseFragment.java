@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
-import com.biryanistudio.todo.ui.MainActivity;
+import com.biryanistudio.todo.interfaces.ITasksUpdated;
 
 
-public abstract class BaseFragment extends Fragment implements MainActivity.ITasksUpdated {
+public abstract class BaseFragment extends Fragment implements ITasksUpdated {
 
     protected FragmentPresenter presenter;
     protected RecyclerView recyclerView;

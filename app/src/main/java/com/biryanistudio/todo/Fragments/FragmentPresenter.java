@@ -88,5 +88,4 @@ class FragmentPresenter {
 	private void setTextViewVisibiltiy(int visibility) {
 		textView.setVisibility(visibility);
 	}
-	//TODO: Change icon of FAB when tab changes
 }
