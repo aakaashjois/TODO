@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         snackbar.show();
-        //TODO: Check if snackbar animations work.
     }
 
     public void updateCompletedFragment() {

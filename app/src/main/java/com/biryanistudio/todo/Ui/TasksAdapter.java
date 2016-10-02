@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     private List<String> timestamps = new ArrayList<>();
 
     public TasksAdapter(@NonNull final Cursor cursor, @NonNull final Fragment fragment) {
-        convertCursorToList(cursor);
+        convertCursorToList(cursor, -1);
         this.fragment = fragment;
     }
 
@@ -50,8 +49,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
             holder.task.setPaintFlags(holder.task.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
         holder.checkBox.setOnCheckedChangeListener(this);
-        //TODO: Add animations for recyclerview
-        //TODO: If user checks last item, animation is cut short by textview being set to visible
     }
 
     @Override
@@ -60,8 +57,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     }
 
     public void swapCursor(@NonNull Cursor newCursor, final long updatedRows) {
-        convertCursorToList(newCursor);
-        notifyItemRangeChanged(0, (int) updatedRows);
+        convertCursorToList(newCursor, updatedRows);
     }
 
     @Override
@@ -70,7 +66,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         handleItemChecked(task);
     }
 
-    private void convertCursorToList(@NonNull final Cursor cursor) {
+    private void convertCursorToList(@NonNull final Cursor cursor, long updatedRows) {
         cursor.moveToFirst();
         do {
             tasks.add(cursor.getString(
@@ -81,6 +77,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
                     cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TIME_STAMP)));
         } while (cursor.moveToNext());
         cursor.close();
+        if (updatedRows != -1) notifyItemRangeRemoved(0, (int) updatedRows);
     }
 
     private void handleItemChecked(final String task) {

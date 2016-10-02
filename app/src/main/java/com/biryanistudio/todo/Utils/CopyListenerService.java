@@ -65,9 +65,10 @@ public class CopyListenerService extends Service implements
                                 clipText.contains("//todo") ? clipText.replace("//todo", "") :
                                         clipText.replace("// todo", "");
                 clipText = clipText.trim();
-                Log.i(TAG, "onPrimaryClipChanged: " + clipText);
-                if (!(clipText.trim().equals("")))
+                if (!(clipText.trim().equals(""))) {
+                    Log.i(TAG, "onPrimaryClipChanged: " + clipText);
                     saveTextToDatabase(clipText);
+                }
             }
         }
     }

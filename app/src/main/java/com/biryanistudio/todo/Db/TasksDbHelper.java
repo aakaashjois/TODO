@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 public class TasksDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Tasks.db";
-    //TODO: This dbHelper is never used.
     private static TasksDbHelper dbHelper;
 
     private TasksDbHelper(Context context) {
@@ -18,7 +17,8 @@ public class TasksDbHelper extends SQLiteOpenHelper {
 
     public static TasksDbHelper getInstance(@NonNull Context context) {
         if (dbHelper == null) {
-            return new TasksDbHelper(context);
+            dbHelper = new TasksDbHelper(context);
+            return dbHelper;
         } else {
             return dbHelper;
         }
