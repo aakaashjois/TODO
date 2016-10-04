@@ -1,6 +1,5 @@
 package com.biryanistudio.todo.fragments;
 
-import android.animation.Animator;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -29,7 +28,12 @@ class FragmentPresenter {
     }
 
     void setRecyclerViewAdapter() {
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(fragment.getContext());
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(fragment.getContext()) {
+            @Override
+            public boolean supportsPredictiveItemAnimations() {
+                return true;
+            }
+        };
         recyclerView.setLayoutManager(layoutManager);
         final Cursor cursor = getAppropriateCursor();
         if (cursor != null) {
@@ -72,7 +76,7 @@ class FragmentPresenter {
 
     }
 
-    private void swapCursorOnAdapter(final Cursor cursor, @NonNull final long  updatedRows) {
+    private void swapCursorOnAdapter(final Cursor cursor, final long updatedRows) {
         if (cursor != null) {
             if (cursor.getCount() != 0) {
                 adapter.swapCursor(cursor, updatedRows);

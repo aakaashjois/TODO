@@ -119,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		final int currentTab = viewPager.getCurrentItem();
 		final String action = currentTab == 0 ?
 				getString(R.string.complete_all_todos) : getString(R.string.clear_all_todos);
+		final String actionMessage = currentTab == 0 ?
+				getString(R.string.complete_all_todos_message) : getString(R.string.clear_all_todos_message);
 		final Snackbar snackbar = createSnackBar(action, Snackbar.LENGTH_LONG);
 		snackbar.setAction("Yes", new View.OnClickListener() {
 			@Override
@@ -128,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				else
 					(( BaseFragment ) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
 				snackbar.dismiss();
-				createSnackBar("Cleared", Snackbar.LENGTH_SHORT).show();
+				createSnackBar(actionMessage, Snackbar.LENGTH_SHORT).show();
 			}
 		});
 		snackbar.show();

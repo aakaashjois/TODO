@@ -3,8 +3,8 @@ package com.biryanistudio.todo.db;
 import android.provider.BaseColumns;
 
 public final class TasksContract {
-    static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + TaskEntry.TABLE_NAME;
+
+    static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + TaskEntry.TABLE_NAME;
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
     static final String SQL_CREATE_ENTRIES =
