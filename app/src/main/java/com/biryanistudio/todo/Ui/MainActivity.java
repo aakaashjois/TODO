@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
@@ -29,7 +30,7 @@ import com.biryanistudio.todo.utils.CopyListenerService;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-	public ViewPager viewPager;
+	private ViewPager viewPager;
 	private CoordinatorLayout coordinatorLayout;
 	private FragmentPagerAdapter fragmentPagerAdapter;
 
@@ -51,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		viewPager.setAdapter(fragmentPagerAdapter);
 		viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 			@Override
-			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+			public void onPageScrolled(int position,
+			                           float positionOffset, int positionOffsetPixels) {
 			}
 
 			@Override
@@ -68,17 +70,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 			@Override
 			public void onPageScrollStateChanged(int state) {
-
 			}
 		});
 		tabs.setupWithViewPager(viewPager);
 		fab.setOnClickListener(this);
-		final TextInputLayout taskInputLayout = ( TextInputLayout ) findViewById(R.id.task_input_layout);
-		final TextInputEditText taskInput = ( TextInputEditText ) findViewById(R.id.task_input);
+		final TextInputLayout taskInputLayout =
+				( TextInputLayout ) findViewById(R.id.task_input_layout);
+		final TextInputEditText taskInput =
+				( TextInputEditText ) findViewById(R.id.task_input);
 		taskInput.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
 			}
 
 			@Override
@@ -86,7 +88,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				if ( charSequence.length() > 140 ) {
 					taskInputLayout.setErrorEnabled(true);
 					taskInputLayout.setError("Exceeded limit");
-					taskInput.setPaintFlags(taskInput.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+					taskInput.setPaintFlags(
+							taskInput.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 					taskInput.setAlpha(0.7f);
 				} else {
 					taskInputLayout.setError("");
@@ -98,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 			@Override
 			public void afterTextChanged(Editable editable) {
-
 			}
 		});
 		taskInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -106,9 +108,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
 				if ( i == EditorInfo.IME_ACTION_DONE )
 					if ( taskInputLayout.isErrorEnabled() )
-						taskInput.setError("Enter a shorter //TODO");
-					else
-						Log.v("Testing EditText", taskInput.getText().toString().trim()); //TODO: Handle the text
+						if ( textView.getText().toString().trim().equals("") )
+							textView.setError("Enter a longer //TODO");
+						else
+							textView.setError("Enter a shorter //TODO");
+					else {
+						Log.v("Testing EditText", textView.getText().toString().trim());
+						//TODO: Handle the text
+						textView.setText(null);
+						textView.clearFocus();
+						coordinatorLayout.requestFocus();
+						(( InputMethodManager ) getSystemService(INPUT_METHOD_SERVICE))
+								.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+					}
 				return true;
 			}
 		});
@@ -159,5 +171,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		actionView.setTypeface(Typeface.create("casual", Typeface.BOLD));
 		return snackbar;
 	}
-
 }
