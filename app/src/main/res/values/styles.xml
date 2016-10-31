@@ -35,4 +35,8 @@
         <item name="android:textColor">@android:color/holo_red_light</item>
     </style>
 
+    <style name="QuickSettingDialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
+
 </resources>

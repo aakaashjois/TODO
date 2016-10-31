@@ -21,6 +21,18 @@
 
         <service android:name=".utils.CopyListenerService"/>
 
+        <service
+            android:name=".utils.QuickSettingsDialogService"
+            android:icon="@mipmap/ic_launcher"
+            android:label="Add a new //TODO"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+
+        </service>
+
     </application>
 
 </manifest>
