@@ -12,6 +12,4 @@
     <string name="complete_all_todos_message">Awesome! Enjoy your day.</string>
     <string name="clear_all_todos_message">Cleared! The list is clean.</string>
     <string name="todo_added">"New TODO Added"</string>
-
-    <string name="action_button_text">Add</string>
 </resources>
