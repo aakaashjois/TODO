@@ -1,0 +1,14 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutDisabledMessage="@string/todo_added"
+        android:shortcutId="newTask"
+        android:shortcutLongLabel="@string/todo_added"
+        android:shortcutShortLabel="@string/todo_added">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.biryanistudio.todo.ui.NewTaskDialogActivity"
+            android:targetPackage="com.biryanistudio.todo"/>
+    </shortcut>
+</shortcuts>
