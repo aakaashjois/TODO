@@ -8,18 +8,20 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".TodoApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/SplashTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
             android:name="com.facebook.ads.AudienceNetworkActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -57,6 +59,9 @@
             android:theme="@style/Theme.AppCompat.Dialog">
         </activity>
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="916c170fe1c31528aa3ba2e9651b4152fd6c19a7" />
     </application>
 
 </manifest>

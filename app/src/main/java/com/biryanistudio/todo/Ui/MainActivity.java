@@ -15,7 +15,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,11 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onAdLoaded(Ad ad) {
-                if (ad != nativeAd)
-                    return;
-                Log.v("Title", nativeAd.getAdTitle());
-                Log.v("CTA", nativeAd.getAdCallToAction());
-                Log.v("Link", nativeAd.getAdChoicesLinkUrl());
+                if (ad != nativeAd) return;
 
                 FrameLayout adLayoutContainer = (FrameLayout) findViewById(R.id.ad_layout_container);
                 LinearLayout adView = (LinearLayout) LayoutInflater.from(MainActivity.this)
@@ -95,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 NativeAd.downloadAndDisplayImage(nativeAd.getAdIcon(), adIcon);
 
                 nativeAd.registerViewForInteraction(adView);
-
             }
 
             @Override
