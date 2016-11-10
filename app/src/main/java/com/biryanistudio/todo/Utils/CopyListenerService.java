@@ -21,6 +21,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.db.DbTransactions;
 import com.biryanistudio.todo.ui.MainActivity;
 
 public class CopyListenerService extends Service implements

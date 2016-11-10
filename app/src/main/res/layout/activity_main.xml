@@ -92,7 +92,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/view_pager"/>
+    <include
+        android:id="@+id/view_pager"
+        layout="@layout/view_pager" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/clear"

@@ -9,6 +9,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -25,4 +26,14 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.0.0'
     compile 'com.android.support:design:25.0.0'
     compile 'com.android.support:support-v4:25.0.0'
+
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    //noinspection GradleDynamicVersion
+    compile 'com.facebook.android:audience-network-sdk:4.+'
+    compile 'com.google.android.gms:play-services:9.8.0'
+    //Ads support
+//    compile 'com.inmobi.monetization:inmobi-ads:6.0.0'
+//    compile 'com.google.android.gms:play-services:9.8.0'
+//    compile 'com.squareup.picasso:picasso:2.5.2'
+//    compile 'com.android.support:multidex:1.0.1'
 }

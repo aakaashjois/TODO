@@ -21,7 +21,7 @@ public class CompletedFragment extends BaseFragment {
 
     public void updateTasks() {
         presenter.setRecyclerViewAdapter();
-        presenter.setTextViewText();
+        presenter.setEmptyTextView();
     }
 
     public void updatePendingFragment() {

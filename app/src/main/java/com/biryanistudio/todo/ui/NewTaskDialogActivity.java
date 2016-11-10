@@ -9,12 +9,12 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.db.DbTransactions;
 
 public class NewTaskDialogActivity extends AppCompatActivity {
 
@@ -74,8 +74,7 @@ public class NewTaskDialogActivity extends AppCompatActivity {
                                 else
                                     textView.setError("Enter a shorter //TODO");
                             else {
-                                Log.v("Testing EditText", textView.getText().toString().trim());
-                                //TODO: Handle the text
+                                DbTransactions.writeTask(NewTaskDialogActivity.this, textView.getText().toString().trim());
                                 dialog.dismiss();
                                 finish();
                             }

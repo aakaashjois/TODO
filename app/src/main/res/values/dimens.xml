@@ -5,4 +5,5 @@
     <dimen name="list_item_horizontal_margin">8dp</dimen>
     <dimen name="list_item_vertical_margin">4dp</dimen>
     <dimen name="toast_margin">16dp</dimen>
+    <dimen name="ad_layout_margin_right">88dp</dimen>
 </resources>

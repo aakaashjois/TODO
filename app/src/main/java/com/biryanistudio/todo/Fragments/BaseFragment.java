@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.interfaces.ITasksUpdated;
+import com.biryanistudio.todo.ui.TasksAdapter;
 
 
 public abstract class BaseFragment extends Fragment implements ITasksUpdated {
@@ -32,7 +33,7 @@ public abstract class BaseFragment extends Fragment implements ITasksUpdated {
     public void onResume() {
         super.onResume();
         presenter.setRecyclerViewAdapter();
-        presenter.setTextViewText();
+        presenter.setEmptyTextView();
     }
 
     @Override
@@ -40,5 +41,9 @@ public abstract class BaseFragment extends Fragment implements ITasksUpdated {
 
     public void updateRecyclerView() {
         presenter.setRecyclerViewAdapter();
+    }
+
+    public TasksAdapter getRecyclerAdapter() {
+        return ((TasksAdapter) recyclerView.getAdapter());
     }
 }

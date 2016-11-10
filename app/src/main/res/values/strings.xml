@@ -12,4 +12,6 @@
     <string name="complete_all_todos_message">Awesome! Enjoy your day.</string>
     <string name="clear_all_todos_message">Cleared! The list is clean.</string>
     <string name="todo_added">"New TODO Added"</string>
+
+    <string name="facebook_app_id">1226886224071788</string>
 </resources>

@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.db.DbTransactions;
 import com.biryanistudio.todo.ui.TasksAdapter;
-import com.biryanistudio.todo.utils.DbTransactions;
 
 
 class FragmentPresenter {
@@ -49,7 +49,7 @@ class FragmentPresenter {
         recyclerView.setAdapter(adapter);
     }
 
-    void setTextViewText() {
+    void setEmptyTextView() {
         if (fragment instanceof PendingFragment) {
             textView.setText(R.string.text_not_added_pending_yet);
         } else {
@@ -81,7 +81,7 @@ class FragmentPresenter {
             if (cursor.getCount() != 0) {
                 adapter.swapCursor(cursor, updatedRows);
             } else {
-                setTextViewText();
+                setEmptyTextView();
             }
         }
     }

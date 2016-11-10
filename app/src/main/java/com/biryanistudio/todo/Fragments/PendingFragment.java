@@ -22,7 +22,7 @@ public class PendingFragment extends BaseFragment {
 
     public void updateTasks() {
         presenter.setRecyclerViewAdapter();
-        presenter.setTextViewText();
+        presenter.setEmptyTextView();
     }
 
     public void updateCompletedFragment() {

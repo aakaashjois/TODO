@@ -14,11 +14,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.db.DbTransactions;
 import com.biryanistudio.todo.db.TasksContract;
 import com.biryanistudio.todo.fragments.BaseFragment;
 import com.biryanistudio.todo.fragments.CompletedFragment;
 import com.biryanistudio.todo.fragments.PendingFragment;
-import com.biryanistudio.todo.utils.DbTransactions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +59,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
 
     @Override
     public int getItemCount() {
+        if (tasks.isEmpty()) return 0;
         return tasks.size();
     }
 
@@ -118,7 +119,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
             super(itemView);
             task = (TextView) itemView.findViewById(R.id.task);
             checkBox = (CheckBox) itemView.findViewById(R.id.check_box);
-            delete = ( ImageButton ) itemView.findViewById(R.id.delete);
+            delete = (ImageButton) itemView.findViewById(R.id.delete);
         }
     }
 }
