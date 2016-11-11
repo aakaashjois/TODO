@@ -14,4 +14,7 @@
     <string name="todo_added">"New TODO Added"</string>
 
     <string name="facebook_app_id">1226886224071788</string>
+
+    <string name="content_description_delete_todo">Delete this TODO</string>
+    <string name="content_description_ad_icon">Ad Icon</string>
 </resources>

@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-        AdSettings.addTestDevice("17e6d3b1a2323a076cb225b9b096e9de");
+        AdSettings.addTestDevice("0c65328ace843e643fe067f97e4b2a33");
         nativeAd.loadAd();
     }
 
@@ -118,10 +118,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        fab.setImageResource(R.drawable.ic_done_all);
+                        fab.setImageResource(R.drawable.ic_clear_task);
                         break;
                     case 1:
-                        fab.setImageResource(R.drawable.ic_clear_all);
+                        fab.setImageResource(R.drawable.ic_remove_task);
                         break;
                 }
             }

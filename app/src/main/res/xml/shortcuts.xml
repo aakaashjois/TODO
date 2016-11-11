@@ -1,7 +1,7 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
         android:enabled="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_add_task"
         android:shortcutDisabledMessage="@string/todo_added"
         android:shortcutId="newTask"
         android:shortcutLongLabel="@string/todo_added"

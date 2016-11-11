@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ad_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:layout_marginEnd="@dimen/ad_layout_margin_right"
+    android:layout_marginEnd="@dimen/ad_layout_margin"
     android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/ad_choices_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp" />
+        android:layout_marginEnd="@dimen/list_item_horizontal_margin"
+        android:layout_marginStart="@dimen/list_item_horizontal_margin" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_margin="8dp"
+            android:layout_marginEnd="@dimen/list_item_horizontal_margin"
+            android:layout_marginStart="@dimen/list_item_horizontal_margin"
+            android:contentDescription="@string/content_description_ad_icon"
             android:cropToPadding="true"
             android:scaleType="centerCrop" />
 
@@ -38,12 +39,14 @@
                 android:id="@+id/ad_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_marginBottom="@dimen/list_item_vertical_margin"
+                android:layout_marginEnd="@dimen/list_item_horizontal_margin"
+                android:layout_marginStart="@dimen/list_item_horizontal_margin"
+                android:layout_marginTop="@dimen/list_item_vertical_margin"
                 android:gravity="center"
                 android:maxLength="20"
                 android:textAppearance="@style/HandWritingTextAppearance"
-                android:textStyle="bold"
-                tools:text="aaaaaaaaaaaaaaaaaaaa" />
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/ad_cta"
@@ -52,11 +55,9 @@
                 android:background="@color/colorPrimary"
                 android:maxLength="25"
                 android:textAppearance="@style/HandWritingTextAppearance"
-                android:textColor="@color/colorPrimaryDark"
-                tools:text="aaaaaaaaaaaaaaaaaaaaaaaa" />
+                android:textColor="@color/colorPrimaryDark" />
         </LinearLayout>
 
     </LinearLayout>
-
 
 </LinearLayout>
