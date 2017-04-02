@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.db.DbTransactions;
 import com.biryanistudio.todo.ui.TasksAdapter;
-import com.biryanistudio.todo.utils.DbTransactions;
 
 
 class FragmentPresenter {

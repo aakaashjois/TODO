@@ -14,11 +14,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.db.DbTransactions;
 import com.biryanistudio.todo.db.TasksContract;
 import com.biryanistudio.todo.fragments.BaseFragment;
 import com.biryanistudio.todo.fragments.CompletedFragment;
 import com.biryanistudio.todo.fragments.PendingFragment;
-import com.biryanistudio.todo.utils.DbTransactions;
 
 import java.util.ArrayList;
 import java.util.List;

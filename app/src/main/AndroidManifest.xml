@@ -24,10 +24,10 @@
 
         </activity>
 
-        <service android:name=".utils.CopyListenerService"/>
+        <service android:name=".services.CopyListenerService" />
 
         <service
-            android:name=".utils.QuickSettingsIntentService"
+            android:name=".services.QuickSettingsIntentService"
             android:icon="@mipmap/ic_launcher"
             android:label="New //TODO"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">

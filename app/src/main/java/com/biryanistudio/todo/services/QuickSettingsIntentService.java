@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.utils;
+package com.biryanistudio.todo.services;
 
 import android.annotation.TargetApi;
 import android.content.Intent;

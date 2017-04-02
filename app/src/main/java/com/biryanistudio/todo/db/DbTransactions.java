@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.utils;
+package com.biryanistudio.todo.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,9 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.util.Log;
-
-import com.biryanistudio.todo.db.TasksContract;
-import com.biryanistudio.todo.db.TasksDbHelper;
 
 public class DbTransactions {
     private static final String TAG = DbTransactions.class.getSimpleName();
@@ -36,7 +33,7 @@ public class DbTransactions {
         return cursor;
     }
 
-    static long writeTask(@NonNull final Context context, @NonNull final String text) {
+    public static long writeTask(@NonNull final Context context, @NonNull final String text) {
         final boolean canProceed = checkForDuplicacy(context, text);
         if (canProceed) {
             final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);

@@ -23,10 +23,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.db.DbTransactions;
 import com.biryanistudio.todo.fragments.BaseFragment;
 import com.biryanistudio.todo.fragments.CompletedFragment;
 import com.biryanistudio.todo.fragments.PendingFragment;
-import com.biryanistudio.todo.utils.CopyListenerService;
+import com.biryanistudio.todo.services.CopyListenerService;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -114,7 +115,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             textView.setError("Enter a shorter //TODO");
                     else {
                         Log.v("Testing EditText", textView.getText().toString().trim());
-                        //TODO: Handle the text
+                        long newRowId = DbTransactions.writeTask(MainActivity.this,
+                                textView.getText().toString().trim());
+                        if (newRowId == -1)
+                            textView.setError("Unable to add //TODO. Try again!");
+                        else
+                            textView.setError("");
                         textView.setText(null);
                         textView.clearFocus();
                         coordinatorLayout.requestFocus();
