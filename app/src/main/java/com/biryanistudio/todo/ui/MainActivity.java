@@ -45,10 +45,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initUi() {
-        coordinatorLayout = ( CoordinatorLayout ) findViewById(R.id.activity_list);
-        final TabLayout tabs = ( TabLayout ) findViewById(R.id.tabs);
-        viewPager = ( ViewPager ) findViewById(R.id.viewPager);
-        final FloatingActionButton fab = ( FloatingActionButton ) findViewById(R.id.clear);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.activity_list);
+        final TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.clear);
         fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(fragmentPagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onPageSelected(int position) {
-                switch ( position ) {
+                switch (position) {
                     case 0:
                         fab.setImageResource(R.drawable.ic_done_all);
                         break;
@@ -76,9 +76,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tabs.setupWithViewPager(viewPager);
         fab.setOnClickListener(this);
         final TextInputLayout taskInputLayout =
-                ( TextInputLayout ) findViewById(R.id.task_input_layout);
+                (TextInputLayout) findViewById(R.id.task_input_layout);
         final TextInputEditText taskInput =
-                ( TextInputEditText ) findViewById(R.id.task_input);
+                (TextInputEditText) findViewById(R.id.task_input);
         taskInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if ( charSequence.length() > 140 ) {
+                if (charSequence.length() > 140) {
                     taskInputLayout.setErrorEnabled(true);
                     taskInputLayout.setError("Exceeded limit");
                     taskInput.setPaintFlags(
@@ -107,9 +107,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         taskInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if ( i == EditorInfo.IME_ACTION_DONE )
-                    if ( taskInputLayout.isErrorEnabled() )
-                        if ( textView.getText().toString().trim().equals("") )
+                if (i == EditorInfo.IME_ACTION_DONE)
+                    if (taskInputLayout.isErrorEnabled())
+                        if (textView.getText().toString().trim().equals(""))
                             textView.setError("Enter a longer //TODO");
                         else
                             textView.setError("Enter a shorter //TODO");
@@ -117,14 +117,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.v("Testing EditText", textView.getText().toString().trim());
                         long newRowId = DbTransactions.writeTask(MainActivity.this,
                                 textView.getText().toString().trim());
-                        if (newRowId == -1)
-                            textView.setError("Unable to add //TODO. Try again!");
-                        else
+                        if (newRowId == -1) {
+                            taskInputLayout.setError("Unable to add //TODO. Try again!");
+                        } else {
+                            taskInputLayout.setErrorEnabled(false);
                             textView.setError("");
+                        }
                         textView.setText(null);
                         textView.clearFocus();
                         coordinatorLayout.requestFocus();
-                        (( InputMethodManager ) getSystemService(INPUT_METHOD_SERVICE))
+                        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                                 .hideSoftInputFromWindow(textView.getWindowToken(), 0);
                     }
                 return true;
@@ -143,10 +145,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         snackbar.setAction("Yes", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ( currentTab == 0 )
-                    (( BaseFragment ) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
+                if (currentTab == 0)
+                    ((BaseFragment) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
                 else
-                    (( BaseFragment ) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
+                    ((BaseFragment) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
                 snackbar.dismiss();
                 createSnackBar(actionMessage, Snackbar.LENGTH_SHORT).show();
             }
@@ -155,12 +157,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void updateCompletedFragment() {
-        CompletedFragment fragment = ( CompletedFragment ) fragmentPagerAdapter.getItem(1);
+        CompletedFragment fragment = (CompletedFragment) fragmentPagerAdapter.getItem(1);
         fragment.updateTasks();
     }
 
     public void updatePendingFragment() {
-        PendingFragment fragment = ( PendingFragment ) fragmentPagerAdapter.getItem(0);
+        PendingFragment fragment = (PendingFragment) fragmentPagerAdapter.getItem(0);
         fragment.updateTasks();
     }
 
@@ -168,10 +170,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Snackbar snackbar = Snackbar.make(coordinatorLayout, action, snackbarLength);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        TextView textView = ( TextView ) snackbarView
+        TextView textView = (TextView) snackbarView
                 .findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        TextView actionView = ( TextView ) snackbarView
+        TextView actionView = (TextView) snackbarView
                 .findViewById(android.support.design.R.id.snackbar_action);
         actionView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         actionView.setTypeface(Typeface.create("casual", Typeface.BOLD));
