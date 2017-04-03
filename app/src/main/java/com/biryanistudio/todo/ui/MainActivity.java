@@ -39,9 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        startService(new Intent(this, CopyListenerService.class));
         initUi();
-        Intent service = new Intent(this, CopyListenerService.class);
-        startService(service);
     }
 
     private void initUi() {
@@ -88,12 +87,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 140) {
                     taskInputLayout.setErrorEnabled(true);
-                    taskInputLayout.setError("Exceeded limit");
+                    taskInputLayout.setError(getString(R.string.exceeded_limit));
                     taskInput.setPaintFlags(
                             taskInput.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     taskInput.setAlpha(0.7f);
                 } else {
-                    taskInputLayout.setError("");
+                    taskInputLayout.setError(null);
                     taskInputLayout.setErrorEnabled(false);
                     taskInput.setPaintFlags(0);
                     taskInput.setAlpha(1f);
@@ -109,19 +108,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE)
                     if (taskInputLayout.isErrorEnabled())
-                        if (textView.getText().toString().trim().equals(""))
-                            textView.setError("Enter a longer //TODO");
-                        else
-                            textView.setError("Enter a shorter //TODO");
+                        if (!textView.getText().toString().trim().isEmpty())
+                            textView.setError(getString(R.string.enter_shorter_todo));
                     else {
                         Log.v("Testing EditText", textView.getText().toString().trim());
                         long newRowId = DbTransactions.writeTask(MainActivity.this,
                                 textView.getText().toString().trim());
                         if (newRowId == -1) {
-                            taskInputLayout.setError("Unable to add //TODO. Try again!");
+                            taskInputLayout.setError(getString(R.string.add_todo_error));
                         } else {
                             taskInputLayout.setErrorEnabled(false);
-                            textView.setError("");
+                            textView.setError(null);
                         }
                         textView.setText(null);
                         textView.clearFocus();
@@ -142,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final String actionMessage = currentTab == 0 ?
                 getString(R.string.complete_all_todos_message) : getString(R.string.clear_all_todos_message);
         final Snackbar snackbar = createSnackBar(action, Snackbar.LENGTH_LONG);
-        snackbar.setAction("Yes", new View.OnClickListener() {
+        snackbar.setAction(R.string.yes, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (currentTab == 0)

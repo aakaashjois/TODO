@@ -29,6 +29,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     private List<String> tasks = new ArrayList<>();
     private List<String> pending = new ArrayList<>();
     private List<String> timestamps = new ArrayList<>();
+    //TODO: Include timestamps in database
 
     public TasksAdapter(@NonNull final Cursor cursor, @NonNull final Fragment fragment) {
         convertCursorToList(cursor, -1);

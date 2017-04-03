@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.biryanistudio.todo">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.biryanistudio.todo">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
@@ -12,7 +13,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/SplashTheme">
+        android:theme="@style/SplashTheme"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <activity android:name=".ui.MainActivity">
             <intent-filter>
@@ -31,7 +33,7 @@
 
         <service
             android:name=".services.QuickSettingsIntentService"
-            android:icon="@drawable/ic_add_task"
+            android:icon="@drawable/ic_add_circle"
             android:label="@string/todo_shortcut"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -41,7 +43,13 @@
 
         <activity
             android:name=".ui.NewTaskDialogActivity"
-            android:theme="@style/Theme.AppCompat.Dialog">
+            android:theme="@style/Theme.AppCompat.Dialog"
+            android:label="@string/todo_shortcut">
+            <intent-filter>
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
 
     </application>

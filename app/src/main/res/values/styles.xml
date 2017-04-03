@@ -36,6 +36,7 @@
     </style>
 
     <style name="HandWritingCounterOverflowText">
+        <item name="android:fontFamily">casual</item>
         <item name="android:textColor">@android:color/holo_red_light</item>
     </style>
 

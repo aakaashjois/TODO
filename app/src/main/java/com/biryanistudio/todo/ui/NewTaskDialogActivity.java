@@ -2,7 +2,9 @@ package com.biryanistudio.todo.ui;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -13,8 +15,10 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.db.DbTransactions;
 
 public class NewTaskDialogActivity extends AppCompatActivity {
 
@@ -22,6 +26,11 @@ public class NewTaskDialogActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        CharSequence charSequence = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            charSequence = (getIntent()!=null) ? getIntent()
+                    .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT) : null;
+        final String newTodo = (charSequence != null) ? charSequence.toString() : null;
         final Dialog dialog = new Dialog(this, R.style.NewTaskDialog);
         dialog.setContentView(R.layout.activity_new_task_dialog);
         dialog.setCancelable(true);
@@ -36,9 +45,10 @@ public class NewTaskDialogActivity extends AppCompatActivity {
             @Override
             public void onShow(DialogInterface dialogInterface) {
                 final TextInputLayout dialogTaskInputLayout =
-                        ( TextInputLayout ) dialog.findViewById(R.id.dialog_task_input_layout);
+                        (TextInputLayout) dialog.findViewById(R.id.dialog_task_input_layout);
                 final TextInputEditText dialogTaskInput =
-                        ( TextInputEditText ) dialog.findViewById(R.id.dialog_task_input);
+                        (TextInputEditText) dialog.findViewById(R.id.dialog_task_input);
+                dialogTaskInput.setText(newTodo);
                 dialogTaskInput.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -46,7 +56,7 @@ public class NewTaskDialogActivity extends AppCompatActivity {
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        if ( charSequence.length() > 140 ) {
+                        if (charSequence.length() > 140) {
                             dialogTaskInputLayout.setErrorEnabled(true);
                             dialogTaskInputLayout.setError("Exceeded limit");
                             dialogTaskInput.setPaintFlags(
@@ -67,17 +77,22 @@ public class NewTaskDialogActivity extends AppCompatActivity {
                 dialogTaskInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                        if ( i == EditorInfo.IME_ACTION_DONE )
-                            if ( dialogTaskInputLayout.isErrorEnabled() )
-                                if ( textView.getText().toString().trim().equals("") )
+                        if (i == EditorInfo.IME_ACTION_DONE)
+                            if (dialogTaskInputLayout.isErrorEnabled())
+                                if (textView.getText().toString().trim().equals(""))
                                     textView.setError("Enter a longer //TODO");
                                 else
                                     textView.setError("Enter a shorter //TODO");
                             else {
                                 Log.v("Testing EditText", textView.getText().toString().trim());
-                                //TODO: Handle the text
-                                dialog.dismiss();
-                                finish();
+                                long id = DbTransactions.writeTask(NewTaskDialogActivity.this,
+                                        textView.getText().toString().trim());
+                                if (id == -1)
+                                    Toast.makeText(NewTaskDialogActivity.this, "Unable to create a TODO. Try again!", Toast.LENGTH_SHORT).show();
+                                else {
+                                    dialog.dismiss();
+                                    finish();
+                                }
                             }
                         return true;
                     }
