@@ -15,10 +15,10 @@ import com.biryanistudio.todo.ui.TasksAdapter;
 
 class FragmentPresenter {
     private static final String TAG = FragmentPresenter.class.getSimpleName();
-    private Fragment fragment;
+    private final Fragment fragment;
     private TasksAdapter adapter;
-    private RecyclerView recyclerView;
-    private TextView textView;
+    private final RecyclerView recyclerView;
+    private final TextView textView;
 
     FragmentPresenter(@NonNull Fragment fragment, @NonNull final RecyclerView recyclerView,
                       @NonNull final TextView textView) {

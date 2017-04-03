@@ -45,6 +45,7 @@
     </LinearLayout>
 
     <ImageButton
+        android:contentDescription="@string/delete_todo"
         android:id="@+id/delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

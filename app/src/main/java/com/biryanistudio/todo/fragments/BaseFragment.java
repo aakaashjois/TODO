@@ -15,9 +15,9 @@ import com.biryanistudio.todo.interfaces.ITasksUpdated;
 
 public abstract class BaseFragment extends Fragment implements ITasksUpdated {
 
-    protected FragmentPresenter presenter;
-    protected RecyclerView recyclerView;
-    protected TextView textView;
+    FragmentPresenter presenter;
+    RecyclerView recyclerView;
+    TextView textView;
 
     @Nullable
     @Override

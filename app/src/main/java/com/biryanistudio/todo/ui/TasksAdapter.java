@@ -25,10 +25,10 @@ import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
-    private Fragment fragment;
-    private List<String> tasks = new ArrayList<>();
-    private List<String> pending = new ArrayList<>();
-    private List<String> timestamps = new ArrayList<>();
+    private final Fragment fragment;
+    private final List<String> tasks = new ArrayList<>();
+    private final List<String> pending = new ArrayList<>();
+    private final List<String> timestamps = new ArrayList<>();
     //TODO: Include timestamps in database
 
     public TasksAdapter(@NonNull final Cursor cursor, @NonNull final Fragment fragment) {
@@ -111,9 +111,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView task;
-        CheckBox checkBox;
-        ImageButton delete;
+        final TextView task;
+        final CheckBox checkBox;
+        final ImageButton delete;
 
         ViewHolder(View itemView) {
             super(itemView);

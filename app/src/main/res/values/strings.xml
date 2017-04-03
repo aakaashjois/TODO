@@ -18,4 +18,5 @@
     <string name="enter_shorter_todo">Enter a shorter TODO</string>
     <string name="add_todo_error">Unable to add TODO. Try again!</string>
     <string name="yes">Yes</string>
+    <string name="delete_todo">Delete TODO</string>
 </resources>

@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.db.DbTransactions;
@@ -58,12 +57,12 @@ public class NewTaskDialogActivity extends AppCompatActivity {
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                         if (charSequence.length() > 140) {
                             dialogTaskInputLayout.setErrorEnabled(true);
-                            dialogTaskInputLayout.setError("Exceeded limit");
+                            dialogTaskInputLayout.setError(getString(R.string.exceeded_limit));
                             dialogTaskInput.setPaintFlags(
                                     dialogTaskInput.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                             dialogTaskInput.setAlpha(0.7f);
                         } else {
-                            dialogTaskInputLayout.setError("");
+                            dialogTaskInputLayout.setError(null);
                             dialogTaskInputLayout.setErrorEnabled(false);
                             dialogTaskInput.setPaintFlags(0);
                             dialogTaskInput.setAlpha(1f);
@@ -79,16 +78,14 @@ public class NewTaskDialogActivity extends AppCompatActivity {
                     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                         if (i == EditorInfo.IME_ACTION_DONE)
                             if (dialogTaskInputLayout.isErrorEnabled())
-                                if (textView.getText().toString().trim().equals(""))
-                                    textView.setError("Enter a longer //TODO");
-                                else
-                                    textView.setError("Enter a shorter //TODO");
+                                if (!textView.getText().toString().trim().isEmpty())
+                                    textView.setError(getString(R.string.enter_shorter_todo));
                             else {
                                 Log.v("Testing EditText", textView.getText().toString().trim());
                                 long id = DbTransactions.writeTask(NewTaskDialogActivity.this,
                                         textView.getText().toString().trim());
                                 if (id == -1)
-                                    Toast.makeText(NewTaskDialogActivity.this, "Unable to create a TODO. Try again!", Toast.LENGTH_SHORT).show();
+                                    dialogTaskInputLayout.setError(getString(R.string.add_todo_error));
                                 else {
                                     dialog.dismiss();
                                     finish();
