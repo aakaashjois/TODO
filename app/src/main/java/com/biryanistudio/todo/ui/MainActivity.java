@@ -3,6 +3,7 @@ package com.biryanistudio.todo.ui;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -58,14 +59,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onPageSelected(int position) {
+                Drawable drawable;
                 switch (position) {
                     case 0:
-                        fab.setImageResource(R.drawable.ic_done_all);
+                        drawable = ContextCompat
+                                .getDrawable(MainActivity.this, R.drawable.done_clear_animation);
                         break;
                     case 1:
-                        fab.setImageResource(R.drawable.ic_clear_all);
+                        drawable = ContextCompat
+                                .getDrawable(MainActivity.this, R.drawable.clear_done_animation);
                         break;
+                    default:
+                        drawable = null;
                 }
+                if(drawable != null)
+                    fab.setImageDrawable(drawable);
+                /*
+                FIXME: Get the animation to work
+                if (drawable instanceof Animatable)
+                    ((Animatable) drawable).start();
+                 */
             }
 
             @Override
@@ -110,22 +123,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (taskInputLayout.isErrorEnabled())
                         if (!textView.getText().toString().trim().isEmpty())
                             textView.setError(getString(R.string.enter_shorter_todo));
-                    else {
-                        Log.v("Testing EditText", textView.getText().toString().trim());
-                        long newRowId = DbTransactions.writeTask(MainActivity.this,
-                                textView.getText().toString().trim());
-                        if (newRowId == -1) {
-                            taskInputLayout.setError(getString(R.string.add_todo_error));
-                        } else {
-                            taskInputLayout.setErrorEnabled(false);
-                            textView.setError(null);
+                        else {
+                            Log.v("Testing EditText", textView.getText().toString().trim());
+                            long newRowId = DbTransactions.writeTask(MainActivity.this,
+                                    textView.getText().toString().trim());
+                            if (newRowId == -1) {
+                                taskInputLayout.setError(getString(R.string.add_todo_error));
+                            } else {
+                                taskInputLayout.setErrorEnabled(false);
+                                textView.setError(null);
+                            }
+                            textView.setText(null);
+                            textView.clearFocus();
+                            coordinatorLayout.requestFocus();
+                            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                                    .hideSoftInputFromWindow(textView.getWindowToken(), 0);
                         }
-                        textView.setText(null);
-                        textView.clearFocus();
-                        coordinatorLayout.requestFocus();
-                        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                                .hideSoftInputFromWindow(textView.getWindowToken(), 0);
-                    }
                 return true;
             }
         });
