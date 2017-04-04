@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.ui;
+package com.biryanistudio.todo.fragments;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -6,17 +6,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.biryanistudio.todo.R;
-import com.biryanistudio.todo.fragments.CompletedFragment;
-import com.biryanistudio.todo.fragments.PendingFragment;
 
-class FragmentPagerAdapter extends FragmentStatePagerAdapter {
+public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     final private Context context;
     final private PendingFragment pendingFragment;
     final private CompletedFragment completedFragment;
     private final int tabCount;
 
-    FragmentPagerAdapter(FragmentManager fm, Context context) {
+    public FragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
         pendingFragment = new PendingFragment();
