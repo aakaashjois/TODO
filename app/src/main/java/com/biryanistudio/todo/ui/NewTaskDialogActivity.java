@@ -85,7 +85,7 @@ public class NewTaskDialogActivity extends AppCompatActivity {
                                 long id = DbTransactions.writeTask(NewTaskDialogActivity.this,
                                         textView.getText().toString().trim());
                                 if (id == -1)
-                                    dialogTaskInputLayout.setError(getString(R.string.add_todo_error));
+                                    dialogTaskInputLayout.setError("Error");
                                 else {
                                     dialog.dismiss();
                                     finish();

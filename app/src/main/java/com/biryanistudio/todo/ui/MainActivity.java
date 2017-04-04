@@ -27,6 +27,7 @@ import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.db.DbTransactions;
 import com.biryanistudio.todo.fragments.BaseFragment;
 import com.biryanistudio.todo.fragments.CompletedFragment;
+import com.biryanistudio.todo.fragments.FragmentPagerAdapter;
 import com.biryanistudio.todo.fragments.PendingFragment;
 import com.biryanistudio.todo.services.CopyListenerService;
 
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             long newRowId = DbTransactions.writeTask(MainActivity.this,
                                     textView.getText().toString().trim());
                             if (newRowId == -1) {
-                                taskInputLayout.setError(getString(R.string.add_todo_error));
+                                taskInputLayout.setError("Error");
                             } else {
                                 taskInputLayout.setErrorEnabled(false);
                                 textView.setError(null);
@@ -155,10 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         snackbar.setAction(R.string.yes, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (currentTab == 0)
-                    ((BaseFragment) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
-                else
-                    ((BaseFragment) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
+                ((BaseFragment) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
                 snackbar.dismiss();
                 createSnackBar(actionMessage, Snackbar.LENGTH_SHORT).show();
             }

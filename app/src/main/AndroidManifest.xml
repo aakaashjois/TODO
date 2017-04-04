@@ -3,10 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.biryanistudio.todo">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-
     <application
-        android:name=".TodoApplication"
         android:fullBackupContent="true"
         android:hardwareAccelerated="true"
         android:allowBackup="true"
@@ -22,6 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
+            </intent-filter>
 
             <meta-data
                 android:name="android.app.shortcuts"
@@ -32,7 +32,7 @@
         <service android:name=".services.CopyListenerService" />
 
         <service
-            android:name=".services.QuickSettingsIntentService"
+            android:name=".services.QuickSettingsInputIntentService"
             android:icon="@drawable/ic_add_circle"
             android:label="@string/todo_shortcut"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
