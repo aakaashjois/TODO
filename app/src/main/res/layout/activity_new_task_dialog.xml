@@ -15,8 +15,6 @@
         android:id="@+id/dialog_task_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         app:hintAnimationEnabled="true"
         app:hintEnabled="true"
         app:hintTextAppearance="@style/TextAppearance.AppCompat.Small">

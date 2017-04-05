@@ -2,8 +2,6 @@ package com.biryanistudio.todo.ui;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -19,12 +17,6 @@ public class NewTaskDialogActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        CharSequence charSequence = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            charSequence = (getIntent() != null) ? getIntent()
-                    .getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT) : null;
-        final String newTodo = (charSequence != null) ? charSequence.toString() : null;
         final Dialog dialog = new Dialog(this, R.style.NewTaskDialog);
         dialog.setContentView(R.layout.activity_new_task_dialog);
         dialog.setCancelable(true);
@@ -40,7 +32,7 @@ public class NewTaskDialogActivity extends AppCompatActivity {
             public void onShow(DialogInterface dialogInterface) {
                 final TextInputEditText dialogTaskInput =
                         (TextInputEditText) dialog.findViewById(R.id.dialog_task_input);
-                dialogTaskInput.setText(newTodo);
+                dialogTaskInput.requestFocus();
                 dialogTaskInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
