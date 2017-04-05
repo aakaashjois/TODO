@@ -1,15 +1,12 @@
 package com.biryanistudio.todo.ui;
 
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,10 +17,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.adapters.FragmentPagerAdapter;
 import com.biryanistudio.todo.db.DbTransactions;
 import com.biryanistudio.todo.fragments.BaseFragment;
 import com.biryanistudio.todo.fragments.CompletedFragment;
-import com.biryanistudio.todo.fragments.FragmentPagerAdapter;
 import com.biryanistudio.todo.fragments.PendingFragment;
 import com.biryanistudio.todo.services.CopyListenerService;
 
@@ -56,23 +53,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onPageSelected(int position) {
-                Drawable drawable;
                 switch (position) {
                     case 0:
-                        drawable = ContextCompat
-                                .getDrawable(MainActivity.this, R.drawable.done_clear_animation);
+                        fab.setImageResource(R.drawable.done_clear_animation);
                         break;
                     case 1:
-                        drawable = ContextCompat
-                                .getDrawable(MainActivity.this, R.drawable.clear_done_animation);
+                        fab.setImageResource(R.drawable.clear_done_animation);
                         break;
-                    default:
-                        drawable = null;
                 }
-                if (drawable != null)
-                    fab.setImageDrawable(drawable);
                 /*
                 FIXME: Get the animation to work
+                Drawable drawable = fab.getDrawable();
                 if (drawable instanceof Animatable)
                     ((Animatable) drawable).start();
                  */
@@ -93,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.v("Testing EditText", textView.getText().toString().trim());
                     DbTransactions.writeTask(
                             MainActivity.this, textView.getText().toString().trim());
+                    ((PendingFragment) fragmentPagerAdapter.getItem(0)).updateTasks();
                     textView.setText(null);
                     taskInput.clearFocus();
                     coordinatorLayout.requestFocus();
@@ -113,13 +105,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final String actionMessage = currentTab == 0 ?
                 getString(R.string.complete_all_todos_message) :
                 getString(R.string.clear_all_todos_message);
-        final Snackbar snackbar = createSnackBar(action, Snackbar.LENGTH_LONG);
+        final Snackbar snackbar = UiUtils.createSnackBar(MainActivity.this,
+                coordinatorLayout,
+                action,
+                Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.yes, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((BaseFragment) fragmentPagerAdapter.getItem(currentTab)).clearAllTasks();
                 snackbar.dismiss();
-                createSnackBar(actionMessage, Snackbar.LENGTH_SHORT).show();
+                UiUtils.createSnackBar(MainActivity.this,
+                        coordinatorLayout,
+                        actionMessage,
+                        Snackbar.LENGTH_SHORT).show();
             }
         });
         snackbar.show();
@@ -133,19 +131,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void updatePendingFragment() {
         PendingFragment fragment = (PendingFragment) fragmentPagerAdapter.getItem(0);
         fragment.updateTasks();
-    }
-
-    private Snackbar createSnackBar(final String action, final int snackbarLength) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, action, snackbarLength);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        TextView textView = (TextView) snackbarView
-                .findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        TextView actionView = (TextView) snackbarView
-                .findViewById(android.support.design.R.id.snackbar_action);
-        actionView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        actionView.setTypeface(Typeface.create("casual", Typeface.BOLD));
-        return snackbar;
     }
 }

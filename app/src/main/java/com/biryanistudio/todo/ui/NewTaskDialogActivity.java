@@ -40,7 +40,7 @@ public class NewTaskDialogActivity extends AppCompatActivity {
                             String text = textView.getText().toString().trim();
                             DbTransactions.writeTask(NewTaskDialogActivity.this, text);
                             dialog.dismiss();
-                            NotificationUtils.createNotification(NewTaskDialogActivity.this, text);
+                            UiUtils.createNotification(NewTaskDialogActivity.this, text);
                             finish();
                         }
                         return true;

@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.ui;
+package com.biryanistudio.todo.adapters;
 
 import android.database.Cursor;
 import android.graphics.Paint;
@@ -29,7 +29,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     private final List<String> tasks = new ArrayList<>();
     private final List<String> pending = new ArrayList<>();
     private final List<String> timestamps = new ArrayList<>();
-    //TODO: Include timestamps in database
 
     public TasksAdapter(@NonNull final Cursor cursor, @NonNull final Fragment fragment) {
         convertCursorToList(cursor, -1);
@@ -45,6 +44,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.task.setText(tasks.get(position));
+        holder.time.setText(timestamps.get(position));
         holder.checkBox.setTag(tasks.get(position));
         holder.checkBox.setAlpha(1f);
         holder.task.setAlpha(1f);
@@ -112,12 +112,14 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final TextView task;
+        final TextView time;
         final CheckBox checkBox;
         final ImageButton delete;
 
         ViewHolder(View itemView) {
             super(itemView);
             task = (TextView) itemView.findViewById(R.id.task);
+            time = (TextView) itemView.findViewById(R.id.time);
             checkBox = (CheckBox) itemView.findViewById(R.id.check_box);
             delete = ( ImageButton ) itemView.findViewById(R.id.delete);
         }

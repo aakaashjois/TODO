@@ -17,7 +17,7 @@ public class ActionTextActivity extends Activity {
         super.onCreate(savedInstanceState);
         String text = getIntent().getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString().trim();
         DbTransactions.writeTask(this, text);
-        NotificationUtils.createNotification(this, text);
+        UiUtils.createNotification(this, text);
         finish();
     }
 }

@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.biryanistudio.todo.db.DbTransactions;
-import com.biryanistudio.todo.ui.NotificationUtils;
+import com.biryanistudio.todo.ui.UiUtils;
 
 public class CopyListenerService extends Service implements
         ClipboardManager.OnPrimaryClipChangedListener {
@@ -55,7 +55,7 @@ public class CopyListenerService extends Service implements
     private void saveTextToDatabase(String text) {
         long newRowId = DbTransactions.writeTask(this, text);
         if(newRowId != -1)
-            NotificationUtils.createNotification(this, text);
+            UiUtils.createNotification(this, text);
         clipboardManager.addPrimaryClipChangedListener(this);
     }
 }
