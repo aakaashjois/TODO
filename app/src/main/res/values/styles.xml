@@ -1,8 +1,6 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:textColor">@color/colorPrimary</item>
@@ -24,20 +22,6 @@
 
     <style name="HandWritingTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:fontFamily">casual</item>
-    </style>
-
-    <style name="HandWritingCounterText" parent="TextAppearance.AppCompat.Small">
-        <item name="android:fontFamily">casual</item>
-    </style>
-
-    <style name="HandWritingErrorText" parent="TextAppearance.AppCompat.Small">
-        <item name="android:fontFamily">casual</item>
-        <item name="android:textColor">@android:color/holo_red_light</item>
-    </style>
-
-    <style name="HandWritingCounterOverflowText">
-        <item name="android:fontFamily">casual</item>
-        <item name="android:textColor">@android:color/holo_red_light</item>
     </style>
 
     <style name="NewTaskDialog" parent="Theme.AppCompat.Dialog.Alert">

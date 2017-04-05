@@ -1,7 +1,6 @@
 package com.biryanistudio.todo.ui;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,12 +9,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -73,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     default:
                         drawable = null;
                 }
-                if(drawable != null)
+                if (drawable != null)
                     fab.setImageDrawable(drawable);
                 /*
                 FIXME: Get the animation to work
@@ -88,58 +84,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         tabs.setupWithViewPager(viewPager);
         fab.setOnClickListener(this);
-        final TextInputLayout taskInputLayout =
-                (TextInputLayout) findViewById(R.id.task_input_layout);
         final TextInputEditText taskInput =
                 (TextInputEditText) findViewById(R.id.task_input);
-        taskInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 140) {
-                    taskInputLayout.setErrorEnabled(true);
-                    taskInputLayout.setError(getString(R.string.exceeded_limit));
-                    taskInput.setPaintFlags(
-                            taskInput.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    taskInput.setAlpha(0.7f);
-                } else {
-                    taskInputLayout.setError(null);
-                    taskInputLayout.setErrorEnabled(false);
-                    taskInput.setPaintFlags(0);
-                    taskInput.setAlpha(1f);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
         taskInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_DONE)
-                    if (taskInputLayout.isErrorEnabled())
-                        if (!textView.getText().toString().trim().isEmpty())
-                            textView.setError(getString(R.string.enter_shorter_todo));
-                        else {
-                            Log.v("Testing EditText", textView.getText().toString().trim());
-                            long newRowId = DbTransactions.writeTask(MainActivity.this,
-                                    textView.getText().toString().trim());
-                            if (newRowId == -1) {
-                                taskInputLayout.setError("Error");
-                            } else {
-                                taskInputLayout.setErrorEnabled(false);
-                                textView.setError(null);
-                            }
-                            textView.setText(null);
-                            textView.clearFocus();
-                            coordinatorLayout.requestFocus();
-                            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                                    .hideSoftInputFromWindow(textView.getWindowToken(), 0);
-                        }
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    Log.v("Testing EditText", textView.getText().toString().trim());
+                    DbTransactions.writeTask(MainActivity.this, textView.getText().toString().trim());
+                    textView.setText(null);
+                    taskInput.clearFocus();
+                    coordinatorLayout.requestFocus();
+                    ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                            .hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                }
                 return true;
             }
         });

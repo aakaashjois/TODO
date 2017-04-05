@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">//TODO</string>
-    <string name="text_title">//TODO</string>
     <string name="text_subtitle">What would you like to do today?</string>
     <string name="text_not_added_pending_yet">You have not added any TODOs yet!</string>
     <string name="text_not_completed">You have not completed any TODOs yet!</string>
-
     <string name="pending_tab_title">Pending Tasks</string>
     <string name="completed_tab_title">Completed Tasks</string>
     <string name="complete_all_todos">Did you completed all TODOs?</string>
@@ -12,10 +10,7 @@
     <string name="complete_all_todos_message">Awesome! Enjoy your day!</string>
     <string name="clear_all_todos_message">Cleared! The list is clean!</string>
     <string name="todo_added">"New TODO Added"</string>
-
     <string name="todo_shortcut">New TODO</string>
-    <string name="exceeded_limit">Exceeded limit</string>
-    <string name="enter_shorter_todo">Enter a shorter TODO</string>
     <string name="yes">Yes</string>
     <string name="delete_todo">Delete TODO</string>
     <string name="clear_all_path_data">M 3,17 L 17,17 L 17,15 L 3,15 Z M 5,13 L 12,13 L 19,13 L 19,11 L 12,11 L 5,11 Z M 7,7 L 7,9 L 21,9 L 21,7 Z</string>

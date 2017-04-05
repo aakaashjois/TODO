@@ -29,9 +29,11 @@
 
         </activity>
 
-        <service android:name=".services.CopyListenerService" />
+        <service android:name=".services.CopyListenerService"
+            android:process=":copy_listener_service"/>
 
         <service
+            android:process=":qstile_listener_service"
             android:name=".services.QuickSettingsInputIntentService"
             android:icon="@drawable/ic_add_circle"
             android:label="@string/todo_shortcut"

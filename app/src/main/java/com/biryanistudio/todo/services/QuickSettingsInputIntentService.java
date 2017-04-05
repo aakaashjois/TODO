@@ -24,6 +24,7 @@ public class QuickSettingsInputIntentService extends TileService {
                             NewTaskDialogActivity.class));
                 }
             });
+        else
             startActivityAndCollapse(new Intent(getApplicationContext(),
                     NewTaskDialogActivity.class));
     }

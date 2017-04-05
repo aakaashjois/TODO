@@ -18,7 +18,7 @@ public final class TasksContract {
     }
 
     public static class TaskEntry implements BaseColumns {
-        public static final String TABLE_NAME = "tasks";
+        static final String TABLE_NAME = "tasks";
         public static final String COLUMN_NAME_TASK = "task";
         public static final String COLUMN_NAME_TIME_STAMP = "timestamp";
         public static final String COLUMN_NAME_PENDING = "pending";
