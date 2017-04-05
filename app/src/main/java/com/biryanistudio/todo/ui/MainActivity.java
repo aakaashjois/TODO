@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE) {
                     Log.v("Testing EditText", textView.getText().toString().trim());
-                    DbTransactions.writeTask(MainActivity.this, textView.getText().toString().trim());
+                    DbTransactions.writeTask(
+                            MainActivity.this, textView.getText().toString().trim());
                     textView.setText(null);
                     taskInput.clearFocus();
                     coordinatorLayout.requestFocus();
@@ -107,9 +108,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         final int currentTab = viewPager.getCurrentItem();
         final String action = currentTab == 0 ?
-                getString(R.string.complete_all_todos) : getString(R.string.clear_all_todos);
+                getString(R.string.complete_all_todos) :
+                getString(R.string.clear_all_todos);
         final String actionMessage = currentTab == 0 ?
-                getString(R.string.complete_all_todos_message) : getString(R.string.clear_all_todos_message);
+                getString(R.string.complete_all_todos_message) :
+                getString(R.string.clear_all_todos_message);
         final Snackbar snackbar = createSnackBar(action, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.yes, new View.OnClickListener() {
             @Override

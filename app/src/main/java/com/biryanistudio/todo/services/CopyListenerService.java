@@ -1,21 +1,16 @@
 package com.biryanistudio.todo.services;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.db.DbTransactions;
-import com.biryanistudio.todo.ui.MainActivity;
+import com.biryanistudio.todo.ui.NotificationUtils;
 
 public class CopyListenerService extends Service implements
         ClipboardManager.OnPrimaryClipChangedListener {
@@ -60,22 +55,7 @@ public class CopyListenerService extends Service implements
     private void saveTextToDatabase(String text) {
         long newRowId = DbTransactions.writeTask(this, text);
         if(newRowId != -1)
-            createNotification(text);
+            NotificationUtils.createNotification(this, text);
         clipboardManager.addPrimaryClipChangedListener(this);
-    }
-
-    private void createNotification(String text) {
-        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(
-                100,
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_new)
-                        .setContentTitle(getString(R.string.todo_added))
-                        .setContentText(text)
-                        .setContentIntent(PendingIntent.getActivity(
-                                this,
-                                (int) System.currentTimeMillis(),
-                                new Intent(this, MainActivity.class),
-                                PendingIntent.FLAG_UPDATE_CURRENT))
-                        .build());
     }
 }

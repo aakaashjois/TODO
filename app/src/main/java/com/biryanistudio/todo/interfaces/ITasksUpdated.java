@@ -1,7 +1,8 @@
 package com.biryanistudio.todo.interfaces;
 
 /**
- * Created by Aakaash Jois on 01-10-2016 at 09:40 AM.
+ * Created by Aakaash Jois.
+ * 01-10-2016 - 09:40 AM.
  */
 
 public interface ITasksUpdated {

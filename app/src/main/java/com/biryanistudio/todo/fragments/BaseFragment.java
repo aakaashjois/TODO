@@ -21,7 +21,9 @@ public abstract class BaseFragment extends Fragment implements ITasksUpdated {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         textView = (TextView) view.findViewById(R.id.empty_view);

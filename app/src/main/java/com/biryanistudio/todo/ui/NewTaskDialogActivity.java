@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -39,8 +38,6 @@ public class NewTaskDialogActivity extends AppCompatActivity {
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialogInterface) {
-                final TextInputLayout dialogTaskInputLayout =
-                        (TextInputLayout) dialog.findViewById(R.id.dialog_task_input_layout);
                 final TextInputEditText dialogTaskInput =
                         (TextInputEditText) dialog.findViewById(R.id.dialog_task_input);
                 dialogTaskInput.setText(newTodo);
@@ -48,9 +45,10 @@ public class NewTaskDialogActivity extends AppCompatActivity {
                     @Override
                     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                         if (i == EditorInfo.IME_ACTION_DONE) {
-                            DbTransactions.writeTask(NewTaskDialogActivity.this,
-                                    textView.getText().toString().trim());
+                            String text = textView.getText().toString().trim();
+                            DbTransactions.writeTask(NewTaskDialogActivity.this, text);
                             dialog.dismiss();
+                            NotificationUtils.createNotification(NewTaskDialogActivity.this, text);
                             finish();
                         }
                         return true;
