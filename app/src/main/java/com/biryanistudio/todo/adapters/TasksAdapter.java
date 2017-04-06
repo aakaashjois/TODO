@@ -19,6 +19,7 @@ import com.biryanistudio.todo.db.TasksContract;
 import com.biryanistudio.todo.fragments.BaseFragment;
 import com.biryanistudio.todo.fragments.CompletedFragment;
 import com.biryanistudio.todo.fragments.PendingFragment;
+import com.biryanistudio.todo.ui.UiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.task.setText(tasks.get(position));
-        holder.time.setText(timestamps.get(position));
+        holder.time.setText(UiUtils.createTimeStamp(fragment.getContext(), timestamps.get(position)));
         holder.checkBox.setTag(tasks.get(position));
         holder.checkBox.setAlpha(1f);
         holder.task.setAlpha(1f);

@@ -8,10 +8,13 @@ import android.graphics.Typeface;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
+
+import java.util.Date;
 
 /**
  * Created by Aakaash Jois.
@@ -49,8 +52,12 @@ public class UiUtils {
                         .build());
     }
 
-    public static String createTimeStamp() {
-        //TODO: Convert millis to readable format
-        return null;
+    public static String createTimeStamp(Context context, String time) {
+        Date date = new Date(Long.parseLong(time));
+        java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(context);
+        java.text.DateFormat timeFormat = DateFormat.getTimeFormat(context);
+        return context.getString(R.string.timestamp_format,
+                dateFormat.format(date),
+                timeFormat.format(date));
     }
 }
