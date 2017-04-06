@@ -9,22 +9,22 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
-import com.biryanistudio.todo.db.DbTransactions;
 import com.biryanistudio.todo.adapters.TasksAdapter;
+import com.biryanistudio.todo.db.DbTransactions;
 
 
-class FragmentPresenter {
+public class FragmentPresenter {
     private static final String TAG = FragmentPresenter.class.getSimpleName();
     private final Fragment fragment;
     private TasksAdapter adapter;
     private final RecyclerView recyclerView;
-    private final TextView textView;
+    private final TextView noTodosTextView;
 
     FragmentPresenter(@NonNull Fragment fragment, @NonNull final RecyclerView recyclerView,
-                      @NonNull final TextView textView) {
+                      @NonNull final TextView noTodosTextView) {
         this.fragment = fragment;
         this.recyclerView = recyclerView;
-        this.textView = textView;
+        this.noTodosTextView = noTodosTextView;
     }
 
     void setRecyclerViewAdapter() {
@@ -35,25 +35,28 @@ class FragmentPresenter {
             }
         };
         recyclerView.setLayoutManager(layoutManager);
-        final Cursor cursor = getAppropriateCursor();
-        if (cursor != null) {
-            if (cursor.getCount() != 0) {
-                setRecyclerViewVisibility(View.VISIBLE);
-                setTextViewVisibiltiy(View.GONE);
-                adapter = new TasksAdapter(cursor, fragment);
-            } else {
-                setRecyclerViewVisibility(View.GONE);
-                setTextViewVisibiltiy(View.VISIBLE);
-            }
-        }
+        adapter = new TasksAdapter(fragment.getContext(), this, getAppropriateCursor());
         recyclerView.setAdapter(adapter);
     }
 
+    public void showNoTodosTextView() {
+        // Show TextView to display message to user, hide RecyclerView
+        noTodosTextView.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+    }
+
+    public void hideNoTodosTextView() {
+        // Hide TextView to display message to user, show RecyclerView
+        noTodosTextView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+
     void setTextViewText() {
+        // Set appropriate text for TextView depending on Fragment
         if (fragment instanceof PendingFragment) {
-            textView.setText(R.string.text_not_added_pending_yet);
+            noTodosTextView.setText(R.string.text_not_added_pending_yet);
         } else {
-            textView.setText(R.string.text_not_completed);
+            noTodosTextView.setText(R.string.text_not_completed);
         }
     }
 
@@ -66,31 +69,11 @@ class FragmentPresenter {
     }
 
     void clearPendingTasks() {
-        long updatedRows = DbTransactions.updateAllPendingTasksAsCompleted(fragment.getContext());
-        swapCursorOnAdapter(getAppropriateCursor(), updatedRows);
+        adapter.updateAllPendingTasksAsCompleted();
     }
 
     void clearCompletedTasks() {
-        long updatedRows = DbTransactions.deleteAllCompletedTasks(fragment.getContext());
-        swapCursorOnAdapter(getAppropriateCursor(), updatedRows);
+        adapter.deleteAllCompletedTasks();
 
-    }
-
-    private void swapCursorOnAdapter(final Cursor cursor, final long updatedRows) {
-        if (cursor != null) {
-            if (cursor.getCount() != 0) {
-                adapter.swapCursor(cursor, updatedRows);
-            } else {
-                setTextViewText();
-            }
-        }
-    }
-
-    private void setRecyclerViewVisibility(int visibility) {
-        recyclerView.setVisibility(visibility);
-    }
-
-    private void setTextViewVisibiltiy(int visibility) {
-        textView.setVisibility(visibility);
     }
 }

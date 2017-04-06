@@ -14,19 +14,18 @@ import com.biryanistudio.todo.interfaces.ITasksUpdated;
 
 
 public abstract class BaseFragment extends Fragment implements ITasksUpdated {
-
     FragmentPresenter presenter;
     RecyclerView recyclerView;
-    TextView textView;
+    TextView noTodosTextView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        final View view = inflater.inflate(R.layout.list_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        textView = (TextView) view.findViewById(R.id.empty_view);
+        noTodosTextView = (TextView) view.findViewById(R.id.empty_view);
         return view;
     }
 
@@ -34,13 +33,8 @@ public abstract class BaseFragment extends Fragment implements ITasksUpdated {
     public void onResume() {
         super.onResume();
         presenter.setRecyclerViewAdapter();
-        presenter.setTextViewText();
     }
 
     @Override
     public abstract void clearAllTasks();
-
-    public void updateRecyclerView() {
-        presenter.setRecyclerViewAdapter();
-    }
 }

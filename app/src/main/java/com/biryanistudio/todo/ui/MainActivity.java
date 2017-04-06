@@ -20,7 +20,6 @@ import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.adapters.FragmentPagerAdapter;
 import com.biryanistudio.todo.db.DbTransactions;
 import com.biryanistudio.todo.fragments.BaseFragment;
-import com.biryanistudio.todo.fragments.CompletedFragment;
 import com.biryanistudio.todo.fragments.PendingFragment;
 import com.biryanistudio.todo.services.CopyListenerService;
 
@@ -121,15 +120,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         snackbar.show();
-    }
-
-    public void updateCompletedFragment() {
-        CompletedFragment fragment = (CompletedFragment) fragmentPagerAdapter.getItem(1);
-        fragment.updateTasks();
-    }
-
-    public void updatePendingFragment() {
-        PendingFragment fragment = (PendingFragment) fragmentPagerAdapter.getItem(0);
-        fragment.updateTasks();
     }
 }

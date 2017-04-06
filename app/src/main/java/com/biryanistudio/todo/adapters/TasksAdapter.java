@@ -1,9 +1,9 @@
 package com.biryanistudio.todo.adapters;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,20 +20,24 @@ import com.biryanistudio.todo.fragments.BaseFragment;
 import com.biryanistudio.todo.fragments.CompletedFragment;
 import com.biryanistudio.todo.fragments.PendingFragment;
 import com.biryanistudio.todo.ui.UiUtils;
+import com.biryanistudio.todo.fragments.FragmentPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
-        implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
-    private final Fragment fragment;
+        implements CompoundButton.OnCheckedChangeListener {
+    private final Context context;
+    private final FragmentPresenter presenter;
+    // ArrayList of pending and completed tasks; pending is an ArrayList that only contains status of tasks
     private final List<String> tasks = new ArrayList<>();
     private final List<String> pending = new ArrayList<>();
     private final List<String> timestamps = new ArrayList<>();
 
-    public TasksAdapter(@NonNull final Cursor cursor, @NonNull final Fragment fragment) {
-        convertCursorToList(cursor, -1);
-        this.fragment = fragment;
+    public TasksAdapter(@NonNull final Context context, @NonNull final FragmentPresenter presenter, final Cursor cursor) {
+        this.context = context;
+        this.presenter = presenter;
+        convertCursorToList(cursor);
     }
 
     @Override
@@ -44,28 +48,34 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.task.setText(tasks.get(position));
-        holder.time.setText(UiUtils.createTimeStamp(fragment.getContext(), timestamps.get(position)));
-        holder.checkBox.setTag(tasks.get(position));
-        holder.checkBox.setAlpha(1f);
-        holder.task.setAlpha(1f);
-        if (pending.get(position).equalsIgnoreCase("no")) {
-            holder.checkBox.setChecked(true);
-            holder.checkBox.setAlpha(0.7f);
-            holder.task.setAlpha(0.7f);
-            holder.task.setPaintFlags(holder.task.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        if (!tasks.isEmpty() && !pending.isEmpty() && !timestamps.isEmpty()) {
+            // Check if local tasks, pending and timestamps ArrayLists are empty
+            // If empty, call hideNoTodosTextView()
+            // Perform check here because onBindViewHolder() is called after any notifyItem() calls
+            presenter.hideNoTodosTextView();
+
+            holder.task.setAlpha(1f);
+            holder.time.setText(UiUtils.createTimeStamp(fragment.getContext(), timestamps.get(position)));
+            holder.task.setText(tasks.get(position));
+            holder.time.setText(timestamps.get(position));
+            holder.checkBox.setTag(tasks.get(position));
+            holder.checkBox.setAlpha(1f);
+            holder.task.setAlpha(1f);
+            if (pending.get(position).equalsIgnoreCase("no")) {
+                holder.checkBox.setChecked(true);
+                holder.checkBox.setAlpha(0.7f);
+                holder.task.setAlpha(0.7f);
+                holder.task.setPaintFlags(holder.task.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+            holder.checkBox.setOnCheckedChangeListener(this);
+        } else {
+            presenter.showNoTodosTextView();
         }
-        holder.checkBox.setOnCheckedChangeListener(this);
-        holder.delete.setOnClickListener(this);
     }
 
     @Override
     public int getItemCount() {
         return tasks.size();
-    }
-
-    public void swapCursor(@NonNull Cursor newCursor, final long updatedRows) {
-        convertCursorToList(newCursor, updatedRows);
     }
 
     @Override
@@ -74,41 +84,52 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         handleItemChecked(task);
     }
 
-    private void convertCursorToList(@NonNull final Cursor cursor, long updatedRows) {
-        cursor.moveToFirst();
-        do {
-            tasks.add(cursor.getString(
-                    cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TASK)));
-            pending.add(cursor.getString(
-                    cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_PENDING)));
-            timestamps.add(cursor.getString(
-                    cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TIME_STAMP)));
-        } while (cursor.moveToNext());
-        cursor.close();
-        if (updatedRows != -1) notifyItemRangeRemoved(0, (int) updatedRows);
+    private void convertCursorToList(final Cursor cursor) {
+        // Extract data from Cursor into separate ArrayLists: tasks, pending, timestamps
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                tasks.add(cursor.getString(
+                        cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TASK)));
+                pending.add(cursor.getString(
+                        cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_PENDING)));
+                timestamps.add(cursor.getString(
+                        cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TIME_STAMP)));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
     }
 
     private void handleItemChecked(final String task) {
+        // Update task as completed, or remove from database (if already completed)
         int pos = tasks.indexOf(task);
         String isPending = pending.get(pos);
         tasks.remove(pos);
         pending.remove(pos);
         timestamps.remove(pos);
         if (isPending.equalsIgnoreCase("yes")) {
-            DbTransactions.updateTaskAsCompleted(fragment.getContext(), task);
-            ((PendingFragment) fragment).updateCompletedFragment();
+            DbTransactions.updateTaskAsCompleted(context, task);
         } else {
-            DbTransactions.updateTaskAsPending(fragment.getContext(), task);
-            ((CompletedFragment) fragment).updatePendingFragment();
+            DbTransactions.updateTaskAsPending(context, task);
         }
         notifyItemRemoved(pos);
-        if (tasks.size() == 0)
-            ((BaseFragment) fragment).updateRecyclerView();
     }
 
-    @Override
-    public void onClick(View view) {
-        //TODO: Handle deleting of item.
+    public void updateAllPendingTasksAsCompleted() {
+        // Clear tasks, pending and timestamps ArrayLists; update all pending tasks in database as completed
+        tasks.clear();
+        pending.clear();
+        timestamps.clear();
+        final int updated = (int) DbTransactions.updateAllPendingTasksAsCompleted(context);
+        notifyItemRangeRemoved(0, updated);
+    }
+
+    public void deleteAllCompletedTasks() {
+        // Clear tasks, pending and timestamps ArrayLists; delete all completed tasks in database
+        tasks.clear();
+        pending.clear();
+        timestamps.clear();
+        final int updated = (int) DbTransactions.deleteAllCompletedTasks(context);
+        notifyItemRangeRemoved(0, updated);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -122,7 +143,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
             task = (TextView) itemView.findViewById(R.id.task);
             time = (TextView) itemView.findViewById(R.id.time);
             checkBox = (CheckBox) itemView.findViewById(R.id.check_box);
-            delete = ( ImageButton ) itemView.findViewById(R.id.delete);
+            delete = (ImageButton) itemView.findViewById(R.id.delete);
         }
     }
 }
