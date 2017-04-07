@@ -16,11 +16,8 @@ import android.widget.TextView;
 import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.db.DbTransactions;
 import com.biryanistudio.todo.db.TasksContract;
-import com.biryanistudio.todo.fragments.BaseFragment;
-import com.biryanistudio.todo.fragments.CompletedFragment;
-import com.biryanistudio.todo.fragments.PendingFragment;
-import com.biryanistudio.todo.ui.UiUtils;
 import com.biryanistudio.todo.fragments.FragmentPresenter;
+import com.biryanistudio.todo.ui.UiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,9 +52,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
             presenter.hideNoTodosTextView();
 
             holder.task.setAlpha(1f);
-            holder.time.setText(UiUtils.createTimeStamp(fragment.getContext(), timestamps.get(position)));
+            holder.time.setText(UiUtils.createTimeStamp(context, timestamps.get(position)));
             holder.task.setText(tasks.get(position));
-            holder.time.setText(timestamps.get(position));
             holder.checkBox.setTag(tasks.get(position));
             holder.checkBox.setAlpha(1f);
             holder.task.setAlpha(1f);

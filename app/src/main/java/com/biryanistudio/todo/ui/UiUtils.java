@@ -14,7 +14,8 @@ import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Aakaash Jois.
@@ -52,12 +53,38 @@ public class UiUtils {
                         .build());
     }
 
-    public static String createTimeStamp(Context context, String time) {
-        Date date = new Date(Long.parseLong(time));
-        java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(context);
-        java.text.DateFormat timeFormat = DateFormat.getTimeFormat(context);
-        return context.getString(R.string.timestamp_format,
-                dateFormat.format(date),
-                timeFormat.format(date));
+    public static String createTimeStamp(Context context, String millis) {
+        String result;
+        Calendar calendar = GregorianCalendar.getInstance();
+        long taskMillis = Long.parseLong(millis);
+        long currentMillis = calendar.getTimeInMillis();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long todayMidnightMillis = calendar.getTimeInMillis();
+        long yesterdayMidnightMillis = todayMidnightMillis - 86400000;
+        if (currentMillis - taskMillis < 1000)
+            result = context.getString(R.string.just_now);
+        else if (currentMillis - taskMillis < 50000)
+            result = context.getString(R.string.few_seconds_ago);
+        else if (currentMillis - taskMillis < 600000)
+            result = context.getString(R.string.few_minutes_ago);
+        else if (currentMillis - taskMillis < 1800000)
+            result = context.getString(R.string.half_hour_ago);
+        else if (currentMillis - taskMillis < 3600000)
+            result = context.getString(R.string.hour_ago);
+        else {
+            String day;
+            String time = DateFormat.getTimeFormat(context).format(taskMillis);
+            if (taskMillis - todayMidnightMillis < 86400000)
+                day = context.getString(R.string.today);
+            else if (taskMillis > yesterdayMidnightMillis && taskMillis < todayMidnightMillis)
+                day = context.getString(R.string.yesterday);
+            else
+                day = DateFormat.getLongDateFormat(context).format(taskMillis);
+            result = context.getString(R.string.timestamp_format, day, time);
+        }
+        return result;
     }
 }
