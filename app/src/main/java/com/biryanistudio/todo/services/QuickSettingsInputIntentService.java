@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.service.quicksettings.TileService;
 
-import com.biryanistudio.todo.ui.NewTaskDialogActivity;
+import com.biryanistudio.todo.userinterface.NewTaskDialogActivity;
 
 /**
  * Created by Aakaash Jois.

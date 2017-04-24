@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.ui;
+package com.biryanistudio.todo.userinterface;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,7 +10,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
-import com.biryanistudio.todo.db.DbTransactions;
+import com.biryanistudio.todo.database.DbTransactions;
 
 public class NewTaskDialogActivity extends AppCompatActivity {
 

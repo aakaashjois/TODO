@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.ui;
+package com.biryanistudio.todo.userinterface;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;

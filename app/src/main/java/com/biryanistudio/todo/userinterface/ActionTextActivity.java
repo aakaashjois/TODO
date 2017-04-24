@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.ui;
+package com.biryanistudio.todo.userinterface;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 
-import com.biryanistudio.todo.db.DbTransactions;
+import com.biryanistudio.todo.database.DbTransactions;
 
 public class ActionTextActivity extends Activity {
 

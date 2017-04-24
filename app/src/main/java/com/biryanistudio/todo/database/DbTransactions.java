@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.db;
+package com.biryanistudio.todo.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.biryanistudio.todo.db.TasksContract.TaskEntry;
+import com.biryanistudio.todo.database.TasksContract.TaskEntry;
 
 public class DbTransactions {
     private static final String TAG = DbTransactions.class.getSimpleName();

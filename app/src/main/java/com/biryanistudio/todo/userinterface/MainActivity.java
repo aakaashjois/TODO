@@ -1,4 +1,4 @@
-package com.biryanistudio.todo.ui;
+package com.biryanistudio.todo.userinterface;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.adapters.FragmentPagerAdapter;
-import com.biryanistudio.todo.db.DbTransactions;
+import com.biryanistudio.todo.database.DbTransactions;
 import com.biryanistudio.todo.fragments.BaseFragment;
 import com.biryanistudio.todo.fragments.PendingFragment;
 import com.biryanistudio.todo.services.CopyListenerService;

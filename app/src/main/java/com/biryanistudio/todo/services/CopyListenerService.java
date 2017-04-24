@@ -9,8 +9,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.biryanistudio.todo.db.DbTransactions;
-import com.biryanistudio.todo.ui.UiUtils;
+import com.biryanistudio.todo.database.DbTransactions;
+import com.biryanistudio.todo.userinterface.UiUtils;
 
 public class CopyListenerService extends Service implements
         ClipboardManager.OnPrimaryClipChangedListener {
