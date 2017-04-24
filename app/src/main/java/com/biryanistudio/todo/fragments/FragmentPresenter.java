@@ -27,6 +27,10 @@ public class FragmentPresenter {
         this.noTodosTextView = noTodosTextView;
     }
 
+    public String getPendingConditionBasedOnFragmentType() {
+        return fragment instanceof PendingFragment ? "yes" : "no";
+    }
+
     void setRecyclerViewAdapter() {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(fragment.getContext()) {
             @Override

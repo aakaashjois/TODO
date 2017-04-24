@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (!tasks.isEmpty() && !pending.isEmpty() && !timestamps.isEmpty()) {
+
+        if (!pending.isEmpty() && pending.indexOf(presenter.getPendingConditionBasedOnFragmentType()) == -1) {
+            Log.i("TAG", presenter.getPendingConditionBasedOnFragmentType());
             // Check if local tasks, pending and timestamps ArrayLists are empty
             // If empty, call hideNoTodosTextView()
             // Perform check here because onBindViewHolder() is called after any notifyItem() calls
@@ -71,6 +74,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
 
     @Override
     public int getItemCount() {
+        Log.i("TAG", tasks.toString());
         return tasks.size();
     }
 

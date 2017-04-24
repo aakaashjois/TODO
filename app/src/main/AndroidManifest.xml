@@ -13,7 +13,7 @@
         android:theme="@style/SplashTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".userinterface.MainActivity"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,13 +45,13 @@
         </service>
 
         <activity
-            android:name=".ui.NewTaskDialogActivity"
+            android:name=".userinterface.NewTaskDialogActivity"
             android:label="@string/todo_shortcut"
             android:launchMode="singleTask"
             android:noHistory="true"
             android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
-            android:name=".ui.ActionTextActivity"
+            android:name=".userinterface.ActionTextActivity"
             android:label="@string/todo_shortcut"
             android:launchMode="singleTask"
             android:theme="@android:style/Theme.NoDisplay">

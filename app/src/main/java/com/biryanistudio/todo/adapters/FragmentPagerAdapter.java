@@ -6,14 +6,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.biryanistudio.todo.R;
+import com.biryanistudio.todo.fragments.BaseFragment;
 import com.biryanistudio.todo.fragments.CompletedFragment;
 import com.biryanistudio.todo.fragments.PendingFragment;
+
+import java.util.ArrayList;
 
 public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     final private Context context;
     final private PendingFragment pendingFragment;
     final private CompletedFragment completedFragment;
+    final private ArrayList<BaseFragment> fragmentList = new ArrayList();
     private final int tabCount;
 
     public FragmentPagerAdapter(FragmentManager fm, Context context) {
@@ -21,6 +25,8 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         this.context = context;
         pendingFragment = new PendingFragment();
         completedFragment = new CompletedFragment();
+        fragmentList.add(pendingFragment);
+        fragmentList.add(completedFragment);
         tabCount = 2;
     }
 

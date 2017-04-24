@@ -37,4 +37,7 @@ public abstract class BaseFragment extends Fragment implements ITasksUpdated {
 
     @Override
     public abstract void clearAllTasks();
+
+    @Override
+    public abstract void updateTasks();
 }

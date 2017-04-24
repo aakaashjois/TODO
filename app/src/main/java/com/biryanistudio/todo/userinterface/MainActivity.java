@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         fab.setImageResource(R.drawable.clear_done_animation);
                         break;
                 }
+                ((BaseFragment) fragmentPagerAdapter.getItem(position)).updateTasks();
                 /*
                 FIXME: Get the animation to work
                 Drawable drawable = fab.getDrawable();

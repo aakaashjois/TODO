@@ -17,4 +17,10 @@ public class CompletedFragment extends BaseFragment {
     public void clearAllTasks() {
         presenter.clearCompletedTasks();
     }
+
+    @Override
+    public void updateTasks() {
+        presenter.setRecyclerViewAdapter();
+        presenter.setTextViewText();
+    }
 }

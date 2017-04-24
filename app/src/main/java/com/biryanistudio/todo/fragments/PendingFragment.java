@@ -15,7 +15,6 @@ public class PendingFragment extends BaseFragment {
 
     @Override
     public void clearAllTasks() {
-        // TODO Fix clear all
         presenter.clearPendingTasks();
     }
 
