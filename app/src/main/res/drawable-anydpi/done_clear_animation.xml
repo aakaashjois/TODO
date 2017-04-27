@@ -4,6 +4,6 @@
     android:drawable="@drawable/ic_done_all"
     tools:targetApi="lollipop">
     <target
-        android:name="transition"
+        android:name="path"
         android:animation="@animator/done_clear_transition" />
 </animated-vector>

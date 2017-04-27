@@ -1,12 +1,16 @@
 package com.biryanistudio.todo.userinterface;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -44,33 +48,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.clear);
         fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(fragmentPagerAdapter);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position,
-                                       float positionOffset, int positionOffsetPixels) {
-            }
+        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        fab.setImageResource(R.drawable.done_clear_animation);
-                        break;
-                    case 1:
-                        fab.setImageResource(R.drawable.clear_done_animation);
-                        break;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    switch (position) {
+                        case 0:
+                            fab.setImageResource(R.drawable.clear_done_animation);
+                            break;
+                        case 1:
+                            fab.setImageResource(R.drawable.done_clear_animation);
+                            break;
+                    }
+                    ((AnimatedVectorDrawable) fab.getDrawable()).start();
+                } else {
+                    switch (position) {
+                        case 0:
+                            fab.setImageResource(R.drawable.ic_done_all);
+                            break;
+                        case 1:
+                            fab.setImageResource(R.drawable.ic_clear_all);
+                            break;
+                    }
                 }
                 ((BaseFragment) fragmentPagerAdapter.getItem(position)).updateTasks();
-                /*
-                FIXME: Get the animation to work
-                Drawable drawable = fab.getDrawable();
-                if (drawable instanceof Animatable)
-                    ((Animatable) drawable).start();
-                 */
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
             }
         });
         tabs.setupWithViewPager(viewPager);
