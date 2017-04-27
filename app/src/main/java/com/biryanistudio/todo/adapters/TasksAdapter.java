@@ -32,7 +32,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     private final List<String> pending = new ArrayList<>();
     private final List<String> timestamps = new ArrayList<>();
 
-    public TasksAdapter(@NonNull final Context context, @NonNull final FragmentPresenter presenter, final Cursor cursor) {
+    public TasksAdapter(@NonNull final Context context,
+                        @NonNull final FragmentPresenter presenter,
+                        final Cursor cursor) {
         this.context = context;
         this.presenter = presenter;
         convertCursorToList(cursor);
@@ -47,34 +49,23 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        if (!pending.isEmpty() && pending.indexOf(presenter.getPendingConditionBasedOnFragmentType()) == -1) {
-            Log.i("TAG", presenter.getPendingConditionBasedOnFragmentType());
-            // Check if local tasks, pending and timestamps ArrayLists are empty
-            // If empty, call hideNoTodosTextView()
-            // Perform check here because onBindViewHolder() is called after any notifyItem() calls
-            presenter.hideNoTodosTextView();
-
-            holder.task.setAlpha(1f);
-            holder.time.setText(UiUtils.createTimeStamp(context, timestamps.get(position)));
-            holder.task.setText(tasks.get(position));
-            holder.checkBox.setTag(tasks.get(position));
-            holder.checkBox.setAlpha(1f);
-            holder.task.setAlpha(1f);
-            if (pending.get(position).equalsIgnoreCase("no")) {
-                holder.checkBox.setChecked(true);
-                holder.checkBox.setAlpha(0.7f);
-                holder.task.setAlpha(0.7f);
-                holder.task.setPaintFlags(holder.task.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            }
-            holder.checkBox.setOnCheckedChangeListener(this);
-        } else {
-            presenter.showNoTodosTextView();
+        holder.task.setAlpha(1f);
+        holder.time.setText(UiUtils.createTimeStamp(context, timestamps.get(position)));
+        holder.task.setText(tasks.get(position));
+        holder.checkBox.setTag(tasks.get(position));
+        holder.checkBox.setAlpha(1f);
+        holder.task.setAlpha(1f);
+        if (pending.get(position).equalsIgnoreCase("no")) {
+            holder.checkBox.setChecked(true);
+            holder.checkBox.setAlpha(0.7f);
+            holder.task.setAlpha(0.7f);
+            holder.task.setPaintFlags(holder.task.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
+        holder.checkBox.setOnCheckedChangeListener(this);
     }
 
     @Override
     public int getItemCount() {
-        Log.i("TAG", tasks.toString());
         return tasks.size();
     }
 
@@ -84,9 +75,18 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         handleItemChecked(task);
     }
 
+    private void showEmptyViewIfNoTasksPresent() {
+        if (!pending.isEmpty() &&
+                pending.indexOf(presenter.getPendingConditionBasedOnFragmentType()) == -1)
+            presenter.showEmptyView();
+        else
+            presenter.hideEmptyView();
+    }
+
     private void convertCursorToList(final Cursor cursor) {
         // Extract data from Cursor into separate ArrayLists: tasks, pending, timestamps
         if (cursor != null && cursor.moveToFirst()) {
+            presenter.hideEmptyView();
             do {
                 tasks.add(cursor.getString(
                         cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TASK)));
@@ -96,7 +96,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
                         cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TIME_STAMP)));
             } while (cursor.moveToNext());
             cursor.close();
-        }
+        } else
+            presenter.showEmptyView();
     }
 
     private void handleItemChecked(final String task) {
@@ -106,12 +107,12 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         tasks.remove(pos);
         pending.remove(pos);
         timestamps.remove(pos);
-        if (isPending.equalsIgnoreCase("yes")) {
+        if (isPending.equalsIgnoreCase("yes"))
             DbTransactions.updateTaskAsCompleted(context, task);
-        } else {
+        else
             DbTransactions.updateTaskAsPending(context, task);
-        }
         notifyItemRemoved(pos);
+        showEmptyViewIfNoTasksPresent();
     }
 
     public void updateAllPendingTasksAsCompleted() {
@@ -121,6 +122,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         timestamps.clear();
         final int updated = (int) DbTransactions.updateAllPendingTasksAsCompleted(context);
         notifyItemRangeRemoved(0, updated);
+        showEmptyViewIfNoTasksPresent();
     }
 
     public void deleteAllCompletedTasks() {
@@ -130,6 +132,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         timestamps.clear();
         final int updated = (int) DbTransactions.deleteAllCompletedTasks(context);
         notifyItemRangeRemoved(0, updated);
+        showEmptyViewIfNoTasksPresent();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

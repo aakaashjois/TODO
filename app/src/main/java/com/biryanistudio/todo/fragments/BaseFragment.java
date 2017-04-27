@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.interfaces.ITasksUpdated;
@@ -17,6 +18,7 @@ public abstract class BaseFragment extends Fragment implements ITasksUpdated {
     FragmentPresenter presenter;
     RecyclerView recyclerView;
     TextView noTodosTextView;
+    ViewSwitcher emptyViewSwitcher;
 
     @Nullable
     @Override
@@ -26,6 +28,7 @@ public abstract class BaseFragment extends Fragment implements ITasksUpdated {
         final View view = inflater.inflate(R.layout.list_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         noTodosTextView = (TextView) view.findViewById(R.id.empty_view);
+        emptyViewSwitcher = (ViewSwitcher) view.findViewById(R.id.empty_view_switcher);
         return view;
     }
 

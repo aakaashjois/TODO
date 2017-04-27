@@ -24,7 +24,10 @@ import java.util.GregorianCalendar;
 
 public class UiUtils {
 
-    static Snackbar createSnackBar(Context context, View parentLayout, final String action, final int snackbarLength) {
+    static Snackbar createSnackBar(final Context context,
+                                   final View parentLayout,
+                                   final String action,
+                                   final int snackbarLength) {
         Snackbar snackbar = Snackbar.make(parentLayout, action, snackbarLength);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
@@ -38,7 +41,7 @@ public class UiUtils {
         return snackbar;
     }
 
-    public static void createNotification(Context context, String text) {
+    public static void createNotification(final Context context, final String text) {
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(
                 100,
                 new NotificationCompat.Builder(context)
@@ -53,7 +56,7 @@ public class UiUtils {
                         .build());
     }
 
-    public static String createTimeStamp(Context context, String millis) {
+    public static String createTimeStamp(final Context context, final String millis) {
         String result;
         Calendar calendar = GregorianCalendar.getInstance();
         long taskMillis = Long.parseLong(millis);
@@ -64,15 +67,16 @@ public class UiUtils {
         calendar.set(Calendar.MILLISECOND, 0);
         long todayMidnightMillis = calendar.getTimeInMillis();
         long yesterdayMidnightMillis = todayMidnightMillis - 86400000;
-        if (currentMillis - taskMillis < 1000)
+        long deltaMillis = currentMillis - taskMillis;
+        if (deltaMillis < 1000)
             result = context.getString(R.string.just_now);
-        else if (currentMillis - taskMillis < 50000)
+        else if (deltaMillis < 50000)
             result = context.getString(R.string.few_seconds_ago);
-        else if (currentMillis - taskMillis < 600000)
+        else if (deltaMillis < 600000)
             result = context.getString(R.string.few_minutes_ago);
-        else if (currentMillis - taskMillis < 1800000)
+        else if (deltaMillis < 1800000)
             result = context.getString(R.string.half_hour_ago);
-        else if (currentMillis - taskMillis < 3600000)
+        else if (deltaMillis < 3600000)
             result = context.getString(R.string.hour_ago);
         else {
             String day;

@@ -9,7 +9,7 @@ public class CompletedFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter = new FragmentPresenter(this, recyclerView, noTodosTextView);
+        presenter = new FragmentPresenter(this, recyclerView, noTodosTextView, emptyViewSwitcher);
         presenter.setTextViewText();
     }
 

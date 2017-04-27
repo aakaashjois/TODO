@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.adapters.TasksAdapter;
@@ -14,17 +15,20 @@ import com.biryanistudio.todo.database.DbTransactions;
 
 
 public class FragmentPresenter {
-    private static final String TAG = FragmentPresenter.class.getSimpleName();
     private final Fragment fragment;
     private TasksAdapter adapter;
     private final RecyclerView recyclerView;
     private final TextView noTodosTextView;
+    private final ViewSwitcher emptyViewSwitcher;
 
-    FragmentPresenter(@NonNull Fragment fragment, @NonNull final RecyclerView recyclerView,
-                      @NonNull final TextView noTodosTextView) {
+    FragmentPresenter(@NonNull Fragment fragment,
+                      @NonNull final RecyclerView recyclerView,
+                      @NonNull final TextView noTodosTextView,
+                      @NonNull final ViewSwitcher emptyViewSwitcher) {
         this.fragment = fragment;
         this.recyclerView = recyclerView;
         this.noTodosTextView = noTodosTextView;
+        this.emptyViewSwitcher = emptyViewSwitcher;
     }
 
     public String getPendingConditionBasedOnFragmentType() {
@@ -43,31 +47,28 @@ public class FragmentPresenter {
         recyclerView.setAdapter(adapter);
     }
 
-    public void showNoTodosTextView() {
-        // Show TextView to display message to user, hide RecyclerView
-        noTodosTextView.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
-    }
-
-    public void hideNoTodosTextView() {
-        // Hide TextView to display message to user, show RecyclerView
-        noTodosTextView.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
-    }
-
     void setTextViewText() {
         // Set appropriate text for TextView depending on Fragment
-        if (fragment instanceof PendingFragment) {
+        if (fragment instanceof PendingFragment)
             noTodosTextView.setText(R.string.text_not_added_pending_yet);
-        } else {
+        else
             noTodosTextView.setText(R.string.text_not_completed);
-        }
+    }
+
+    public void showEmptyView() {
+        if (emptyViewSwitcher.getNextView().getId() == R.id.empty_view)
+            emptyViewSwitcher.showNext();
+    }
+
+    public void hideEmptyView() {
+        if (emptyViewSwitcher.getNextView().getId() == R.id.recycler_view)
+            emptyViewSwitcher.showNext();
     }
 
     private Cursor getAppropriateCursor() {
         if (fragment instanceof PendingFragment)
             return DbTransactions.readPendingTasks(fragment.getContext());
-        if (fragment instanceof CompletedFragment)
+        else if (fragment instanceof CompletedFragment)
             return DbTransactions.readCompletedTasks(fragment.getContext());
         return null;
     }
