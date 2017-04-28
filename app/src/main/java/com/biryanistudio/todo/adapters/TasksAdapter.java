@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,13 +19,14 @@ import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.database.DbTransactions;
 import com.biryanistudio.todo.database.TasksContract;
 import com.biryanistudio.todo.fragments.FragmentPresenter;
+import com.biryanistudio.todo.userinterface.MainActivity;
 import com.biryanistudio.todo.userinterface.UiUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
-        implements CompoundButton.OnCheckedChangeListener {
+        implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
     private final Context context;
     private final FragmentPresenter presenter;
     // ArrayList of pending and completed tasks; pending is an ArrayList that only contains status of tasks
@@ -62,6 +64,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
             holder.task.setPaintFlags(holder.task.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
         holder.checkBox.setOnCheckedChangeListener(this);
+        holder.delete.setOnClickListener(this);
     }
 
     @Override
@@ -73,6 +76,15 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         String task = (String) buttonView.getTag();
         handleItemChecked(task);
+    }
+
+    @Override
+    public void onClick(View v) {
+        /*
+        TODO: Implement item deleting
+            1. Show confirmation SnackBar
+            2. If positive, delete item from adapter and database
+         */
     }
 
     private void showEmptyViewIfNoTasksPresent() {

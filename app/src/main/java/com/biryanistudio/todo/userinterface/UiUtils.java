@@ -24,7 +24,7 @@ import java.util.GregorianCalendar;
 
 public class UiUtils {
 
-    static Snackbar createSnackBar(final Context context,
+    public static Snackbar createSnackBar(final Context context,
                                    final View parentLayout,
                                    final String action,
                                    final int snackbarLength) {

@@ -6,6 +6,7 @@ package com.biryanistudio.todo.interfaces;
  */
 
 public interface ITasksUpdated {
+
     void clearAllTasks();
 
     void updateTasks();

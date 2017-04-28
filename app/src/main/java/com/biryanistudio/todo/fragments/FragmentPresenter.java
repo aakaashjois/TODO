@@ -49,10 +49,8 @@ public class FragmentPresenter {
 
     void setTextViewText() {
         // Set appropriate text for TextView depending on Fragment
-        if (fragment instanceof PendingFragment)
-            noTodosTextView.setText(R.string.text_not_added_pending_yet);
-        else
-            noTodosTextView.setText(R.string.text_not_completed);
+        noTodosTextView.setText(fragment instanceof PendingFragment ?
+                R.string.text_not_added_pending_yet : R.string.text_not_completed);
     }
 
     public void showEmptyView() {
@@ -66,11 +64,11 @@ public class FragmentPresenter {
     }
 
     private Cursor getAppropriateCursor() {
-        if (fragment instanceof PendingFragment)
-            return DbTransactions.readPendingTasks(fragment.getContext());
-        else if (fragment instanceof CompletedFragment)
-            return DbTransactions.readCompletedTasks(fragment.getContext());
-        return null;
+        return fragment instanceof PendingFragment ?
+                DbTransactions.readPendingTasks(fragment.getContext()) :
+                fragment instanceof CompletedFragment ?
+                        DbTransactions.readCompletedTasks(fragment.getContext()) :
+                        null;
     }
 
     void clearPendingTasks() {
