@@ -41,8 +41,8 @@ public class DbTransactions {
     }
 
     public static long writeTask(@NonNull final Context context, @NonNull final String text) {
-        final boolean canProceed = checkForDuplicacy(context, text);
-        if (canProceed) {
+//        final boolean canProceed = checkForDuplicacy(context, text);
+//        if (canProceed) {
             final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
             final SQLiteDatabase database = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
@@ -53,28 +53,28 @@ public class DbTransactions {
             final long newRowId = database.insert(TaskEntry.TABLE_NAME, null, values);
             Log.i(TAG, "writeTask: " + newRowId);
             return newRowId;
-        } else {
-            Log.i(TAG, "writeTask: -1");
-            return -1;
-        }
+//        } else {
+//            Log.i(TAG, "writeTask: -1");
+//            return -1;
+//        }
     }
 
     public static long updateTaskAsCompleted(@NonNull final Context context,
-                                             @NonNull final String task) {
-        long updateRowId = updateTaskStatus(context, task, true);
+                                             @NonNull final String timestamp) {
+        long updateRowId = updateTaskStatus(context, timestamp, true);
         Log.i(TAG, "updateTaskAsCompleted: " + updateRowId);
         return updateRowId;
     }
 
     public static long updateTaskAsPending(@NonNull final Context context,
-                                           @NonNull final String task) {
-        long updateRowId = updateTaskStatus(context, task, false);
+                                           @NonNull final String timestamp) {
+        long updateRowId = updateTaskStatus(context, timestamp, false);
         Log.i(TAG, "updateTaskAsPending: " + updateRowId);
         return updateRowId;
     }
 
     private static long updateTaskStatus(@NonNull final Context context,
-                                         @NonNull final String task,
+                                         @NonNull final String timestamp,
                                          final boolean pending) {
         final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
@@ -83,8 +83,8 @@ public class DbTransactions {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TaskEntry.COLUMN_NAME_PENDING, taskStatus);
         final String where = TaskEntry.COLUMN_NAME_PENDING + " = ? AND "
-                + TaskEntry.COLUMN_NAME_TASK + " = ?";
-        final String[] whereArgs = new String[]{currentTaskStatus, task};
+                + TaskEntry.COLUMN_NAME_TIME_STAMP + " = ?";
+        final String[] whereArgs = new String[]{currentTaskStatus, timestamp};
         return database.update(TaskEntry.TABLE_NAME, contentValues, where,
                 whereArgs);
     }
@@ -116,27 +116,27 @@ public class DbTransactions {
         return deletedRowIds;
     }
 
-    private static boolean checkForDuplicacy(@NonNull final Context context,
-                                             @NonNull final String task) {
-        final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
-        final SQLiteDatabase database = dbHelper.getReadableDatabase();
-        final String[] projection = {TaskEntry._ID,
-                TaskEntry.COLUMN_NAME_TASK};
-        final String selection = TaskEntry.COLUMN_NAME_TASK
-                + " = ? AND "
-                + TaskEntry.COLUMN_NAME_PENDING
-                + " = ? ";
-        final String[] selectionArgs = new String[]{task, "yes"};
-        final Cursor cursor = database.query(TaskEntry.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null);
-        final boolean duplicate = cursor.getCount() == 0;
-        cursor.close();
-        Log.i(TAG, "checkForDuplicacy: " + duplicate);
-        return duplicate;
-    }
+//    private static boolean checkForDuplicacy(@NonNull final Context context,
+//                                             @NonNull final String task) {
+//        final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
+//        final SQLiteDatabase database = dbHelper.getReadableDatabase();
+//        final String[] projection = {TaskEntry._ID,
+//                TaskEntry.COLUMN_NAME_TASK};
+//        final String selection = TaskEntry.COLUMN_NAME_TASK
+//                + " = ? AND "
+//                + TaskEntry.COLUMN_NAME_PENDING
+//                + " = ? ";
+//        final String[] selectionArgs = new String[]{task, "yes"};
+//        final Cursor cursor = database.query(TaskEntry.TABLE_NAME,
+//                projection,
+//                selection,
+//                selectionArgs,
+//                null,
+//                null,
+//                null);
+//        final boolean duplicate = cursor.getCount() == 0;
+//        cursor.close();
+//        Log.i(TAG, "checkForDuplicacy: " + duplicate);
+//        return duplicate;
+//    }
 }

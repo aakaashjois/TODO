@@ -4,9 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +17,6 @@ import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.database.DbTransactions;
 import com.biryanistudio.todo.database.TasksContract;
 import com.biryanistudio.todo.fragments.FragmentPresenter;
-import com.biryanistudio.todo.userinterface.MainActivity;
 import com.biryanistudio.todo.userinterface.UiUtils;
 
 import java.util.ArrayList;
@@ -50,11 +47,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
         holder.task.setAlpha(1f);
         holder.time.setText(UiUtils.createTimeStamp(context, timestamps.get(position)));
         holder.task.setText(tasks.get(position));
-        holder.checkBox.setTag(tasks.get(position));
+        holder.checkBox.setTag(timestamps.get(position));
         holder.checkBox.setAlpha(1f);
         holder.task.setAlpha(1f);
         if (pending.get(position).equalsIgnoreCase("no")) {
@@ -74,8 +70,8 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        String task = (String) buttonView.getTag();
-        handleItemChecked(task);
+        String timestamp = (String) buttonView.getTag();
+        handleItemChecked(timestamp);
     }
 
     @Override
@@ -88,7 +84,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     }
 
     private void showEmptyViewIfNoTasksPresent() {
-        if (!pending.isEmpty() &&
+        // Show empty view if pending is empty *and* there are no pending items
+        // Check for isEmpty() first to avoid exception when ArrayList is empty
+        if (pending.size() == 0 &&
                 pending.indexOf(presenter.getPendingConditionBasedOnFragmentType()) == -1)
             presenter.showEmptyView();
         else
@@ -112,17 +110,17 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
             presenter.showEmptyView();
     }
 
-    private void handleItemChecked(final String task) {
+    private void handleItemChecked(final String timestamp) {
         // Update task as completed, or remove from database (if already completed)
-        int pos = tasks.indexOf(task);
+        int pos = timestamps.indexOf(timestamp);
         String isPending = pending.get(pos);
         tasks.remove(pos);
         pending.remove(pos);
         timestamps.remove(pos);
         if (isPending.equalsIgnoreCase("yes"))
-            DbTransactions.updateTaskAsCompleted(context, task);
+            DbTransactions.updateTaskAsCompleted(context, timestamp);
         else
-            DbTransactions.updateTaskAsPending(context, task);
+            DbTransactions.updateTaskAsPending(context, timestamp);
         notifyItemRemoved(pos);
         showEmptyViewIfNoTasksPresent();
     }
