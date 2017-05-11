@@ -51,6 +51,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         holder.time.setText(UiUtils.createTimeStamp(context, timestamps.get(position)));
         holder.task.setText(tasks.get(position));
         holder.checkBox.setTag(timestamps.get(position));
+        holder.delete.setTag(timestamps.get(position));
         holder.checkBox.setAlpha(1f);
         holder.task.setAlpha(1f);
         if (pending.get(position).equalsIgnoreCase("no")) {
@@ -76,18 +77,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
 
     @Override
     public void onClick(View v) {
-        /*
-        TODO: Implement item deleting
-            1. Show confirmation SnackBar
-            2. If positive, delete item from adapter and database
-         */
+        final String timestamp = (String) v.getTag();
+        handleItemDeleted(timestamp);
     }
 
     private void showEmptyViewIfNoTasksPresent() {
         // Show empty view if pending is empty *and* there are no pending items
-        // Check for isEmpty() first to avoid exception when ArrayList is empty
-        if (pending.size() == 0 &&
-                pending.indexOf(presenter.getPendingConditionBasedOnFragmentType()) == -1)
+        if (pending.size() == 0)
             presenter.showEmptyView();
         else
             presenter.hideEmptyView();
@@ -121,6 +117,17 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
             DbTransactions.updateTaskAsCompleted(context, timestamp);
         else
             DbTransactions.updateTaskAsPending(context, timestamp);
+        notifyItemRemoved(pos);
+        showEmptyViewIfNoTasksPresent();
+    }
+
+    private void handleItemDeleted(final String timestamp) {
+        // Delete task
+        int pos = timestamps.indexOf(timestamp);
+        tasks.remove(pos);
+        pending.remove(pos);
+        timestamps.remove(pos);
+        DbTransactions.deleteTask(context, timestamp);
         notifyItemRemoved(pos);
         showEmptyViewIfNoTasksPresent();
     }

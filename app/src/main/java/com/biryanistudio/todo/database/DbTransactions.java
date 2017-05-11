@@ -41,22 +41,16 @@ public class DbTransactions {
     }
 
     public static long writeTask(@NonNull final Context context, @NonNull final String text) {
-//        final boolean canProceed = checkForDuplicacy(context, text);
-//        if (canProceed) {
-            final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
-            final SQLiteDatabase database = dbHelper.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(TaskEntry.COLUMN_NAME_TASK, text);
-            values.put(TaskEntry.COLUMN_NAME_TIME_STAMP,
-                    String.valueOf(System.currentTimeMillis()));
-            values.put(TaskEntry.COLUMN_NAME_PENDING, "yes");
-            final long newRowId = database.insert(TaskEntry.TABLE_NAME, null, values);
-            Log.i(TAG, "writeTask: " + newRowId);
-            return newRowId;
-//        } else {
-//            Log.i(TAG, "writeTask: -1");
-//            return -1;
-//        }
+        final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
+        final SQLiteDatabase database = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TaskEntry.COLUMN_NAME_TASK, text);
+        values.put(TaskEntry.COLUMN_NAME_TIME_STAMP,
+                String.valueOf(System.currentTimeMillis()));
+        values.put(TaskEntry.COLUMN_NAME_PENDING, "yes");
+        final long newRowId = database.insert(TaskEntry.TABLE_NAME, null, values);
+        Log.i(TAG, "writeTask: " + newRowId);
+        return newRowId;
     }
 
     public static long updateTaskAsCompleted(@NonNull final Context context,
@@ -96,9 +90,7 @@ public class DbTransactions {
         contentValues.put(TaskEntry.COLUMN_NAME_PENDING, "no");
         final String where = TaskEntry.COLUMN_NAME_PENDING + " = ?";
         final String[] whereArgs = new String[]{"yes"};
-        final long updatedRowIds = database.update(TaskEntry.TABLE_NAME,
-                contentValues,
-                where,
+        final long updatedRowIds = database.update(TaskEntry.TABLE_NAME, contentValues, where,
                 whereArgs);
         Log.i(TAG, "updateAllPendingTasksAsCompleted: " + updatedRowIds);
         return updatedRowIds;
@@ -109,34 +101,18 @@ public class DbTransactions {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
         final String where = TaskEntry.COLUMN_NAME_PENDING + " = ?";
         final String[] whereArgs = new String[]{"no"};
-        final long deletedRowIds = database.delete(TaskEntry.TABLE_NAME,
-                where,
-                whereArgs);
+        final long deletedRowIds = database.delete(TaskEntry.TABLE_NAME, where, whereArgs);
         Log.i(TAG, "deleteAllCompletedTasks: " + deletedRowIds);
         return deletedRowIds;
     }
 
-//    private static boolean checkForDuplicacy(@NonNull final Context context,
-//                                             @NonNull final String task) {
-//        final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
-//        final SQLiteDatabase database = dbHelper.getReadableDatabase();
-//        final String[] projection = {TaskEntry._ID,
-//                TaskEntry.COLUMN_NAME_TASK};
-//        final String selection = TaskEntry.COLUMN_NAME_TASK
-//                + " = ? AND "
-//                + TaskEntry.COLUMN_NAME_PENDING
-//                + " = ? ";
-//        final String[] selectionArgs = new String[]{task, "yes"};
-//        final Cursor cursor = database.query(TaskEntry.TABLE_NAME,
-//                projection,
-//                selection,
-//                selectionArgs,
-//                null,
-//                null,
-//                null);
-//        final boolean duplicate = cursor.getCount() == 0;
-//        cursor.close();
-//        Log.i(TAG, "checkForDuplicacy: " + duplicate);
-//        return duplicate;
-//    }
+    public static long deleteTask(@NonNull final Context context, @NonNull final String timestamp) {
+        final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
+        final SQLiteDatabase database = dbHelper.getWritableDatabase();
+        final String where = TaskEntry.COLUMN_NAME_TIME_STAMP + " = ?";
+        final String[] whereArgs = new String[]{timestamp};
+        int deletedRows = database.delete(TaskEntry.TABLE_NAME, where, whereArgs);
+        Log.i(TAG, "deleteTask: " + deletedRows);
+        return deletedRows;
+    }
 }
