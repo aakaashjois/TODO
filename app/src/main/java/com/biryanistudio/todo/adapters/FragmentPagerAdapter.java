@@ -17,43 +17,29 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     final private Context context;
     final private PendingFragment pendingFragment;
     final private CompletedFragment completedFragment;
-    final private ArrayList<BaseFragment> fragmentList = new ArrayList();
-    private final int tabCount;
+    private static final int TAB_COUNT = 2;
 
     public FragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
         pendingFragment = new PendingFragment();
         completedFragment = new CompletedFragment();
-        fragmentList.add(pendingFragment);
-        fragmentList.add(completedFragment);
-        tabCount = 2;
     }
 
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return pendingFragment;
-            case 1:
-                return completedFragment;
-        }
-        return null;
+        return position == 0 ? pendingFragment : position == 1 ? completedFragment : null;
     }
 
     @Override
     public int getCount() {
-        return tabCount;
+        return TAB_COUNT;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return context.getString(R.string.pending_tab_title);
-            case 1:
-                return context.getString(R.string.completed_tab_title);
-        }
-        return super.getPageTitle(position);
+        return position == 0 ? context.getString(R.string.pending_tab_title) :
+                position == 1 ? context.getString(R.string.completed_tab_title) :
+                        super.getPageTitle(position);
     }
 }

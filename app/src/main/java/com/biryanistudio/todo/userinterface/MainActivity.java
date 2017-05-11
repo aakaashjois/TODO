@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE) {
-                    Log.v("Testing EditText", textView.getText().toString().trim());
                     DbTransactions.writeTask(
                             MainActivity.this, textView.getText().toString().trim());
                     ((PendingFragment) fragmentPagerAdapter.getItem(0)).updateTasks();
