@@ -1,9 +1,7 @@
 package com.biryanistudio.todo.fragments;
 
-import android.app.Activity;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +12,6 @@ import android.widget.ViewSwitcher;
 import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.adapters.TasksAdapter;
 import com.biryanistudio.todo.database.DbTransactions;
-import com.biryanistudio.todo.userinterface.MainActivity;
 
 
 public class FragmentPresenter {

@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.database.DbTransactions;
 import com.biryanistudio.todo.database.TasksContract;
 import com.biryanistudio.todo.fragments.FragmentPresenter;
-import com.biryanistudio.todo.userinterface.MainActivity;
 import com.biryanistudio.todo.userinterface.UiUtils;
 
 import java.util.ArrayList;

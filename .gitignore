@@ -1,9 +1,3 @@
-# Built application files
-*.apk
-
-# Files for the ART/Dalvik VM
-*.dex
-
 # Generated files
 bin/
 gen/
