@@ -29,9 +29,20 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
 
     private final Context context;
     private final FragmentPresenter presenter;
-    // ArrayList of pending and completed tasks; pending is an ArrayList that only contains status of tasks
+
+    /**
+     * {@link ArrayList<String>} of all tasks.
+     */
     private final List<String> tasks = new ArrayList<>();
-    private final List<String> pending = new ArrayList<>();
+
+    /**
+     * {@link ArrayList<String>} of status of all tasks.
+     */
+    private final List<String> statuses = new ArrayList<>();
+
+    /**
+     * {@link ArrayList<String>} of timestamps of all tasks.
+     */
     private final List<String> timestamps = new ArrayList<>();
 
     public TasksAdapter(@NonNull final Context context,
@@ -57,7 +68,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         holder.delete.setTag(timestamps.get(position));
         holder.checkBox.setAlpha(1f);
         holder.task.setAlpha(1f);
-        if (pending.get(position).equalsIgnoreCase("no")) {
+        if (statuses.get(position).equalsIgnoreCase("no")) {
             holder.checkBox.setChecked(true);
             holder.checkBox.setAlpha(0.7f);
             holder.task.setAlpha(0.7f);
@@ -93,34 +104,61 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         snackbar.show();
     }
 
+    /**
+     * Moves all the tasks from Pending Fragment to Completed Fragment and marks them as completed.
+     * <p>
+     * Uses {@link TasksAdapter#clearAllLists()} to clear the {@link TasksAdapter#tasks},
+     * {@link TasksAdapter#statuses} and {@link TasksAdapter#timestamps}.
+     * <p>
+     * Calls {@link DbTransactions#updateAllPendingTasksAsCompleted(Context)} to update the tasks in
+     * the database.
+     */
     public void updateAllPendingTasksAsCompleted() {
-        // Clear tasks, pending and timestamps ArrayLists; update all pending tasks in database as completed
         clearAllLists();
         int updated = DbTransactions.updateAllPendingTasksAsCompleted(context);
         notifyItemRangeRemoved(0, updated);
         showEmptyViewIfNoTasksPresent();
     }
 
+    /**
+     * Deletes all the tasks from Completed Fragment.
+     * <p>
+     * Uses {@link TasksAdapter#clearAllLists()} to clear the {@link TasksAdapter#tasks},
+     * {@link TasksAdapter#statuses} and {@link TasksAdapter#timestamps}.
+     * <p>
+     * Calls {@link DbTransactions#deleteAllCompletedTasks(Context)} to delete all the completed
+     * tasks in the database.
+     */
     public void deleteAllCompletedTasks() {
-        // Clear tasks, pending and timestamps ArrayLists; delete all completed tasks in database
         clearAllLists();
         int updated = DbTransactions.deleteAllCompletedTasks(context);
         notifyItemRangeRemoved(0, updated);
         showEmptyViewIfNoTasksPresent();
     }
 
+    /**
+     * Wrapper method which calls {@link FragmentPresenter#handleEmptyView(boolean)} if no tasks are
+     * present.
+     */
     private void showEmptyViewIfNoTasksPresent() {
-        presenter.handleEmptyView(pending.size() == 0);
+        presenter.handleEmptyView(statuses.size() == 0);
     }
 
+    /**
+     * Converts the cursor into {@link TasksAdapter#tasks}, {@link TasksAdapter#statuses} and
+     * {@link TasksAdapter#timestamps}.
+     * Calls {@link FragmentPresenter#handleEmptyView(boolean)} to display or hide the empty view
+     * based on the Cursor.
+     *
+     * @param cursor Cursor passed to {@link TasksAdapter} when instantiated.
+     */
     private void convertCursorToList(final Cursor cursor) {
-        // Extract data from Cursor into separate ArrayLists: tasks, pending, timestamps
         if (cursor != null && cursor.moveToFirst()) {
             presenter.handleEmptyView(false);
             do {
                 tasks.add(cursor.getString(
                         cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TASK)));
-                pending.add(cursor.getString(
+                statuses.add(cursor.getString(
                         cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_PENDING)));
                 timestamps.add(cursor.getString(
                         cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TIME_STAMP)));
@@ -133,7 +171,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
     private void handleItemChecked(final String timestamp) {
         // Update task as completed, or remove from database (if already completed)
         int itemPosition = timestamps.indexOf(timestamp);
-        String isPending = pending.get(itemPosition);
+        String isPending = statuses.get(itemPosition);
         deleteItemInAllLists(itemPosition);
         int updateRowId = isPending.equalsIgnoreCase("yes") ?
                 DbTransactions.updateTaskAsCompleted(context, timestamp) :
@@ -155,15 +193,25 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         showEmptyViewIfNoTasksPresent();
     }
 
+    /**
+     * Clears {@link TasksAdapter#tasks}, {@link TasksAdapter#statuses} and
+     * {@link TasksAdapter#timestamps}.
+     */
     private void clearAllLists() {
         tasks.clear();
-        pending.clear();
+        statuses.clear();
         timestamps.clear();
     }
 
+    /**
+     * Remove a single item from {@link TasksAdapter#tasks}, {@link TasksAdapter#statuses} and
+     * {@link TasksAdapter#timestamps}.
+     *
+     * @param itemPosition The index of the item to be removed.
+     */
     private void deleteItemInAllLists(int itemPosition) {
         tasks.remove(itemPosition);
-        pending.remove(itemPosition);
+        statuses.remove(itemPosition);
         timestamps.remove(itemPosition);
     }
 

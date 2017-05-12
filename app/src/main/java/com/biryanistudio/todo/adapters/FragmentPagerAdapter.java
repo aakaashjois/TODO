@@ -9,7 +9,6 @@ import com.biryanistudio.todo.R;
 import com.biryanistudio.todo.fragments.CompletedFragment;
 import com.biryanistudio.todo.fragments.PendingFragment;
 
-
 public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     final private Context context;

@@ -24,6 +24,15 @@ import java.util.GregorianCalendar;
 
 public class UiUtils {
 
+    /**
+     * This method is a helper method to create a Snackbar themed as per the app theme.
+     * @param context Context using which the Snackbar has to be created.
+     * @param parentLayout The Snackbar attaches to the bottom of parentLayout. parentLayout must
+     *                     implement CoordinatorLayout for the Snackbar to work.
+     * @param action The action text to display in the Snackbar.
+     * @param snackbarLength The amount of time Snackbar has to be displayed.
+     * @return A Snackbar object is returned.
+     */
     public static Snackbar createSnackBar(final Context context,
                                    final View parentLayout,
                                    final String action,
@@ -41,6 +50,11 @@ public class UiUtils {
         return snackbar;
     }
 
+    /**
+     * This method creates a notification to tell the user when a new task has been added.
+     * @param context Context using which the notification is created.
+     * @param text The text displayed in the notification body.
+     */
     public static void createNotification(final Context context, final String text) {
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(
                 100,
@@ -56,6 +70,11 @@ public class UiUtils {
                         .build());
     }
 
+    /**
+     * This method creates a formatted timestamp to display for the tasks.
+     * @param millis The timestamp at which the task was created.
+     * @return Returns the human readable formatted timestamp.
+     */
     public static String createTimeStamp(final Context context, final String millis) {
         String result;
         Calendar calendar = GregorianCalendar.getInstance();
