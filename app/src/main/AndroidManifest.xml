@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.biryanistudio.todo">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
@@ -12,15 +14,18 @@
         android:supportsRtl="true"
         android:theme="@style/SplashTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
         <activity
             android:name=".userinterface.MainActivity"
             android:windowSoftInputMode="adjustNothing">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
@@ -28,21 +33,8 @@
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
-        </activity>
 
-        <service
-            android:name=".services.CopyListenerService"
-            android:process=":copy_listener_service" />
-        <service
-            android:name=".services.QuickSettingsInputIntentService"
-            android:icon="@drawable/ic_add_circle"
-            android:label="@string/todo_shortcut"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:process=":qstile_listener_service">
-            <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE" />
-            </intent-filter>
-        </service>
+        </activity>
 
         <activity
             android:name=".userinterface.NewTaskDialogActivity"
@@ -50,17 +42,51 @@
             android:launchMode="singleTask"
             android:noHistory="true"
             android:theme="@style/Theme.AppCompat.Dialog" />
+
         <activity
             android:name=".userinterface.ActionTextActivity"
             android:label="@string/todo_shortcut"
             android:launchMode="singleTask"
             android:theme="@android:style/Theme.NoDisplay">
+
             <intent-filter>
                 <action android:name="android.intent.action.PROCESS_TEXT" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
+
         </activity>
+
+        <service
+            android:name=".services.CopyListenerService"
+            android:process=":copy_listener_service" />
+
+        <service
+            android:name=".services.QuickSettingsInputIntentService"
+            android:icon="@drawable/ic_add_circle"
+            android:label="@string/todo_shortcut"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:process=":qstile_listener_service">
+
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".services.TodoStartCopyListenerServiceReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <data android:scheme="package" />
+            </intent-filter>
+
+        </receiver>
+
     </application>
 
 </manifest>

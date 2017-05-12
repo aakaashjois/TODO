@@ -50,25 +50,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onPageSelected(int position) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    switch (position) {
-                        case 0:
-                            fab.setImageResource(R.drawable.clear_done_animation);
-                            break;
-                        case 1:
-                            fab.setImageResource(R.drawable.done_clear_animation);
-                            break;
-                    }
+                    fab.setImageResource(position == 0 ? R.drawable.clear_done_animation :
+                            R.drawable.done_clear_animation);
                     ((AnimatedVectorDrawable) fab.getDrawable()).start();
-                } else {
-                    switch (position) {
-                        case 0:
-                            fab.setImageResource(R.drawable.ic_done_all);
-                            break;
-                        case 1:
-                            fab.setImageResource(R.drawable.ic_clear_all);
-                            break;
-                    }
-                }
+                } else
+                    fab.setImageResource(position == 0 ? R.drawable.ic_done_all :
+                            R.drawable.ic_clear_all);
                 ((BaseFragment) fragmentPagerAdapter.getItem(position)).updateTasks();
             }
         });

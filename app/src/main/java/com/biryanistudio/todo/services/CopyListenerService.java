@@ -37,12 +37,18 @@ public class CopyListenerService extends Service implements
         clipboardManager.removePrimaryClipChangedListener(this);
         if (clipData.getDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
             String clipText = String.valueOf(clipData.getItemAt(0).getText());
-            if (clipText.contains("//TODO") || clipText.contains("// TODO")
-                    || clipText.contains("// todo") || clipText.contains("//todo")) {
+            if (clipText.contains("//TODO")
+                    || clipText.contains("// TODO")
+                    || clipText.contains("//todo")
+                    || clipText.contains("// todo")
+                    || clipText.contains("//Todo")
+                    || clipText.contains("// Todo")) {
                 clipText = clipText.contains("//TODO") ? clipText.replace("//TODO", "") :
                         clipText.contains("// TODO") ? clipText.replace("// TODO", "") :
                                 clipText.contains("//todo") ? clipText.replace("//todo", "") :
-                                        clipText.replace("// todo", "");
+                                        clipText.contains("// todo") ? clipText.replace("// todo", "") :
+                                                clipText.contains("//Todo") ? clipText.replace("//Todo", ""):
+                                                        clipText.replace("// Todo", "");
                 clipText = clipText.trim();
                 if (!(clipText.trim().isEmpty())) {
                     Log.i(TAG, "onPrimaryClipChanged: " + clipText);

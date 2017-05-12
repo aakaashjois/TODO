@@ -148,7 +148,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         // Delete task
         int itemPosition = timestamps.indexOf(timestamp);
         deleteItemInAllLists(itemPosition);
-        DbTransactions.deleteTask(context, timestamp);
+        int deletedRows = DbTransactions.deleteTask(context, timestamp);
+        if (deletedRows == 0)
+            Log.e("Handle Item Delete", "Error deleting");
         notifyItemRemoved(itemPosition);
         showEmptyViewIfNoTasksPresent();
     }
