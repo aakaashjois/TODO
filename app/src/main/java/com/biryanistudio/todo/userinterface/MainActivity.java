@@ -98,11 +98,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         final int currentTab = viewPager.getCurrentItem();
         final String action = currentTab == 0 ?
-                getString(R.string.complete_all_todos) :
-                getString(R.string.clear_all_todos);
+                getString(R.string.complete_all_tasks) :
+                getString(R.string.clear_all_tasks);
         final String actionMessage = currentTab == 0 ?
-                getString(R.string.complete_all_todos_message) :
-                getString(R.string.clear_all_todos_message);
+                getString(R.string.complete_all_tasks_message) :
+                getString(R.string.clear_all_tasks_message);
         final Snackbar snackbar = UiUtils.createSnackBar(MainActivity.this,
                 coordinatorLayout,
                 action,

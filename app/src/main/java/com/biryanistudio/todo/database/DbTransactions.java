@@ -13,12 +13,10 @@ public class DbTransactions {
     private static final String TAG = DbTransactions.class.getSimpleName();
 
     public static Cursor readPendingTasks(@NonNull final Context context) {
-        Log.i(TAG, "readPendingTasks");
         return readAllTasks(context, new String[]{"yes"});
     }
 
     public static Cursor readCompletedTasks(@NonNull final Context context) {
-        Log.i(TAG, "readCompletedTasks");
         return readAllTasks(context, new String[]{"no"});
     }
 
@@ -29,15 +27,13 @@ public class DbTransactions {
         final String[] projection = null;
         final String selection = TaskEntry.COLUMN_NAME_PENDING + " = ?";
         final String sortOrder = TaskEntry.COLUMN_NAME_TIME_STAMP + " DESC";
-        final Cursor cursor = database.query(TaskEntry.TABLE_NAME,
+        return database.query(TaskEntry.TABLE_NAME,
                 projection,
                 selection,
                 selectionArgs,
                 null,
                 null,
                 sortOrder);
-        Log.i(TAG, "readAllTasks: " + cursor.getCount());
-        return cursor;
     }
 
     public static long writeTask(@NonNull final Context context, @NonNull final String text) {
@@ -53,23 +49,19 @@ public class DbTransactions {
         return newRowId;
     }
 
-    public static long updateTaskAsCompleted(@NonNull final Context context,
-                                             @NonNull final String timestamp) {
-        long updateRowId = updateTaskStatus(context, timestamp, true);
-        Log.i(TAG, "updateTaskAsCompleted: " + updateRowId);
-        return updateRowId;
+    public static int updateTaskAsCompleted(@NonNull final Context context,
+                                            @NonNull final String timestamp) {
+        return updateTaskStatus(context, timestamp, true);
     }
 
-    public static long updateTaskAsPending(@NonNull final Context context,
-                                           @NonNull final String timestamp) {
-        long updateRowId = updateTaskStatus(context, timestamp, false);
-        Log.i(TAG, "updateTaskAsPending: " + updateRowId);
-        return updateRowId;
+    public static int updateTaskAsPending(@NonNull final Context context,
+                                          @NonNull final String timestamp) {
+        return updateTaskStatus(context, timestamp, false);
     }
 
-    private static long updateTaskStatus(@NonNull final Context context,
-                                         @NonNull final String timestamp,
-                                         final boolean pending) {
+    private static int updateTaskStatus(@NonNull final Context context,
+                                        @NonNull final String timestamp,
+                                        final boolean pending) {
         final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
         final String taskStatus = pending ? "no" : "yes";
@@ -83,36 +75,30 @@ public class DbTransactions {
                 whereArgs);
     }
 
-    public static long updateAllPendingTasksAsCompleted(@NonNull final Context context) {
+    public static int updateAllPendingTasksAsCompleted(@NonNull final Context context) {
         final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TaskEntry.COLUMN_NAME_PENDING, "no");
         final String where = TaskEntry.COLUMN_NAME_PENDING + " = ?";
         final String[] whereArgs = new String[]{"yes"};
-        final long updatedRowIds = database.update(TaskEntry.TABLE_NAME, contentValues, where,
+        return database.update(TaskEntry.TABLE_NAME, contentValues, where,
                 whereArgs);
-        Log.i(TAG, "updateAllPendingTasksAsCompleted: " + updatedRowIds);
-        return updatedRowIds;
     }
 
-    public static long deleteAllCompletedTasks(@NonNull final Context context) {
+    public static int deleteAllCompletedTasks(@NonNull final Context context) {
         final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
         final String where = TaskEntry.COLUMN_NAME_PENDING + " = ?";
         final String[] whereArgs = new String[]{"no"};
-        final long deletedRowIds = database.delete(TaskEntry.TABLE_NAME, where, whereArgs);
-        Log.i(TAG, "deleteAllCompletedTasks: " + deletedRowIds);
-        return deletedRowIds;
+        return database.delete(TaskEntry.TABLE_NAME, where, whereArgs);
     }
 
-    public static long deleteTask(@NonNull final Context context, @NonNull final String timestamp) {
+    public static int deleteTask(@NonNull final Context context, @NonNull final String timestamp) {
         final TasksDbHelper dbHelper = TasksDbHelper.getInstance(context);
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
         final String where = TaskEntry.COLUMN_NAME_TIME_STAMP + " = ?";
         final String[] whereArgs = new String[]{timestamp};
-        int deletedRows = database.delete(TaskEntry.TABLE_NAME, where, whereArgs);
-        Log.i(TAG, "deleteTask: " + deletedRows);
-        return deletedRows;
+        return database.delete(TaskEntry.TABLE_NAME, where, whereArgs);
     }
 }

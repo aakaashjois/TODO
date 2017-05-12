@@ -15,19 +15,19 @@ import com.biryanistudio.todo.database.DbTransactions;
 
 
 public class FragmentPresenter {
-    private final Fragment fragment;
     private TasksAdapter adapter;
+    private final Fragment fragment;
     private final RecyclerView recyclerView;
-    private final TextView noTodosTextView;
+    private final TextView emptyTextView;
     private final ViewSwitcher emptyViewSwitcher;
 
     FragmentPresenter(@NonNull Fragment fragment,
                       @NonNull final RecyclerView recyclerView,
-                      @NonNull final TextView noTodosTextView,
+                      @NonNull final TextView emptyTextView,
                       @NonNull final ViewSwitcher emptyViewSwitcher) {
         this.fragment = fragment;
         this.recyclerView = recyclerView;
-        this.noTodosTextView = noTodosTextView;
+        this.emptyTextView = emptyTextView;
         this.emptyViewSwitcher = emptyViewSwitcher;
     }
 
@@ -45,30 +45,8 @@ public class FragmentPresenter {
 
     void setTextViewText() {
         // Set appropriate text for TextView depending on Fragment
-        noTodosTextView.setText(fragment instanceof PendingFragment ?
+        emptyTextView.setText(fragment instanceof PendingFragment ?
                 R.string.text_not_added_pending_yet : R.string.text_not_completed);
-    }
-
-    public void showEmptyView() {
-        if (emptyViewSwitcher.getNextView().getId() == R.id.empty_view)
-            emptyViewSwitcher.showNext();
-    }
-
-    public void hideEmptyView() {
-        if (emptyViewSwitcher.getNextView().getId() == R.id.recycler_view)
-            emptyViewSwitcher.showNext();
-    }
-
-    private Cursor getAppropriateCursor() {
-        return fragment instanceof PendingFragment ?
-                DbTransactions.readPendingTasks(fragment.getContext()) :
-                fragment instanceof CompletedFragment ?
-                        DbTransactions.readCompletedTasks(fragment.getContext()) :
-                        null;
-    }
-
-    public View getCoordinatorLayout() {
-        return fragment.getActivity().findViewById(R.id.activity_list);
     }
 
     void clearPendingTasks() {
@@ -78,5 +56,25 @@ public class FragmentPresenter {
     void clearCompletedTasks() {
         adapter.deleteAllCompletedTasks();
 
+    }
+
+    public void handleEmptyView(boolean showEmptyView) {
+        if (showEmptyView) {
+            if (emptyViewSwitcher.getNextView().getId() == R.id.empty_view)
+                emptyViewSwitcher.showNext();
+        } else {
+            if (emptyViewSwitcher.getNextView().getId() == R.id.recycler_view)
+                emptyViewSwitcher.showNext();
+        }
+    }
+
+    public View getCoordinatorLayout() {
+        return fragment.getActivity().findViewById(R.id.activity_list);
+    }
+
+    private Cursor getAppropriateCursor() {
+        return fragment instanceof PendingFragment ?
+                DbTransactions.readPendingTasks(fragment.getContext()) :
+                DbTransactions.readCompletedTasks(fragment.getContext());
     }
 }

@@ -5,10 +5,10 @@
     <string name="text_not_completed">You have not completed any TODOs yet!</string>
     <string name="pending_tab_title">Pending Tasks</string>
     <string name="completed_tab_title">Completed Tasks</string>
-    <string name="complete_all_todos">Did you completed all TODOs?</string>
-    <string name="clear_all_todos">Clear all checked TODOs?</string>
-    <string name="complete_all_todos_message">Awesome! Enjoy your day!</string>
-    <string name="clear_all_todos_message">Cleared! The list is clean!</string>
+    <string name="complete_all_tasks">Did you completed all TODOs?</string>
+    <string name="clear_all_tasks">Clear all checked TODOs?</string>
+    <string name="complete_all_tasks_message">Awesome! Enjoy your day!</string>
+    <string name="clear_all_tasks_message">Cleared! The list is clean!</string>
     <string name="todo_added">"New TODO Added"</string>
     <string name="todo_shortcut">New TODO</string>
     <string name="yes">Yes</string>

@@ -10,7 +10,7 @@
         tools:ignore="UnusedAttribute">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.biryanistudio.todo.ui.NewTaskDialogActivity"
+            android:targetClass="com.biryanistudio.todo.userinterface.NewTaskDialogActivity"
             android:targetPackage="com.biryanistudio.todo"/>
     </shortcut>
 </shortcuts>

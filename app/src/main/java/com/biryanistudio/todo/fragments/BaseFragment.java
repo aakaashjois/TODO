@@ -17,7 +17,7 @@ import com.biryanistudio.todo.interfaces.ITasksUpdated;
 public abstract class BaseFragment extends Fragment implements ITasksUpdated {
     FragmentPresenter presenter;
     RecyclerView recyclerView;
-    TextView noTodosTextView;
+    TextView emptyTextView;
     ViewSwitcher emptyViewSwitcher;
 
     @Nullable
@@ -27,7 +27,7 @@ public abstract class BaseFragment extends Fragment implements ITasksUpdated {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.list_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        noTodosTextView = (TextView) view.findViewById(R.id.empty_view);
+        emptyTextView = (TextView) view.findViewById(R.id.empty_view);
         emptyViewSwitcher = (ViewSwitcher) view.findViewById(R.id.empty_view_switcher);
         return view;
     }

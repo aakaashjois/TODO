@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import java.util.List;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+
     private final Context context;
     private final FragmentPresenter presenter;
     // ArrayList of pending and completed tasks; pending is an ArrayList that only contains status of tasks
@@ -91,18 +93,30 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
         snackbar.show();
     }
 
+    public void updateAllPendingTasksAsCompleted() {
+        // Clear tasks, pending and timestamps ArrayLists; update all pending tasks in database as completed
+        clearAllLists();
+        int updated = DbTransactions.updateAllPendingTasksAsCompleted(context);
+        notifyItemRangeRemoved(0, updated);
+        showEmptyViewIfNoTasksPresent();
+    }
+
+    public void deleteAllCompletedTasks() {
+        // Clear tasks, pending and timestamps ArrayLists; delete all completed tasks in database
+        clearAllLists();
+        int updated = DbTransactions.deleteAllCompletedTasks(context);
+        notifyItemRangeRemoved(0, updated);
+        showEmptyViewIfNoTasksPresent();
+    }
+
     private void showEmptyViewIfNoTasksPresent() {
-        // Show empty view if pending is empty *and* there are no pending items
-        if (pending.size() == 0)
-            presenter.showEmptyView();
-        else
-            presenter.hideEmptyView();
+        presenter.handleEmptyView(pending.size() == 0);
     }
 
     private void convertCursorToList(final Cursor cursor) {
         // Extract data from Cursor into separate ArrayLists: tasks, pending, timestamps
         if (cursor != null && cursor.moveToFirst()) {
-            presenter.hideEmptyView();
+            presenter.handleEmptyView(false);
             do {
                 tasks.add(cursor.getString(
                         cursor.getColumnIndex(TasksContract.TaskEntry.COLUMN_NAME_TASK)));
@@ -113,53 +127,42 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>
             } while (cursor.moveToNext());
             cursor.close();
         } else
-            presenter.showEmptyView();
+            presenter.handleEmptyView(true);
     }
 
     private void handleItemChecked(final String timestamp) {
         // Update task as completed, or remove from database (if already completed)
-        int pos = timestamps.indexOf(timestamp);
-        String isPending = pending.get(pos);
-        tasks.remove(pos);
-        pending.remove(pos);
-        timestamps.remove(pos);
-        if (isPending.equalsIgnoreCase("yes"))
-            DbTransactions.updateTaskAsCompleted(context, timestamp);
-        else
-            DbTransactions.updateTaskAsPending(context, timestamp);
-        notifyItemRemoved(pos);
+        int itemPosition = timestamps.indexOf(timestamp);
+        String isPending = pending.get(itemPosition);
+        deleteItemInAllLists(itemPosition);
+        int updateRowId = isPending.equalsIgnoreCase("yes") ?
+                DbTransactions.updateTaskAsCompleted(context, timestamp) :
+                DbTransactions.updateTaskAsPending(context, timestamp);
+        if (updateRowId == 0)
+            Log.e("Handle Item Check", "Error updating");
+        notifyItemRemoved(itemPosition);
         showEmptyViewIfNoTasksPresent();
     }
 
     private void handleItemDeleted(final String timestamp) {
         // Delete task
-        int pos = timestamps.indexOf(timestamp);
-        tasks.remove(pos);
-        pending.remove(pos);
-        timestamps.remove(pos);
+        int itemPosition = timestamps.indexOf(timestamp);
+        deleteItemInAllLists(itemPosition);
         DbTransactions.deleteTask(context, timestamp);
-        notifyItemRemoved(pos);
+        notifyItemRemoved(itemPosition);
         showEmptyViewIfNoTasksPresent();
     }
 
-    public void updateAllPendingTasksAsCompleted() {
-        // Clear tasks, pending and timestamps ArrayLists; update all pending tasks in database as completed
+    private void clearAllLists() {
         tasks.clear();
         pending.clear();
         timestamps.clear();
-        final int updated = (int) DbTransactions.updateAllPendingTasksAsCompleted(context);
-        notifyItemRangeRemoved(0, updated);
-        showEmptyViewIfNoTasksPresent();
     }
 
-    public void deleteAllCompletedTasks() {
-        // Clear tasks, pending and timestamps ArrayLists; delete all completed tasks in database
-        tasks.clear();
-        pending.clear();
-        timestamps.clear();
-        final int updated = (int) DbTransactions.deleteAllCompletedTasks(context);
-        notifyItemRangeRemoved(0, updated);
-        showEmptyViewIfNoTasksPresent();
+    private void deleteItemInAllLists(int itemPosition) {
+        tasks.remove(itemPosition);
+        pending.remove(itemPosition);
+        timestamps.remove(itemPosition);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
