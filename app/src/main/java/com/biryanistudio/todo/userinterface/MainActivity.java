@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -52,7 +53,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     fab.setImageResource(position == 0 ? R.drawable.clear_done_animation :
                             R.drawable.done_clear_animation);
-                    ((AnimatedVectorDrawable) fab.getDrawable()).start();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                        ((AnimatedVectorDrawable) fab.getDrawable()).start();
+                    else
+                        ((AnimatedVectorDrawableCompat) fab.getDrawable()).start();
                 } else
                     fab.setImageResource(position == 0 ? R.drawable.ic_done_all :
                             R.drawable.ic_clear_all);
