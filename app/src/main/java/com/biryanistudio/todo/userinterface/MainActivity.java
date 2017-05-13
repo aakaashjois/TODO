@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -32,9 +33,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CoordinatorLayout coordinatorLayout;
     private FragmentPagerAdapter fragmentPagerAdapter;
 
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         startService(new Intent(this, CopyListenerService.class));
@@ -46,6 +50,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.clear);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.done_clear_animation, null));
+        else
+            fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_done_all, null));
         fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(fragmentPagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
