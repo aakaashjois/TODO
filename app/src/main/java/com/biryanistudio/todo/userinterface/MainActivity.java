@@ -12,6 +12,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         startService(new Intent(this, CopyListenerService.class));
@@ -50,13 +52,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onPageSelected(int position) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     fab.setImageResource(position == 0 ? R.drawable.clear_done_animation :
                             R.drawable.done_clear_animation);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                         ((AnimatedVectorDrawable) fab.getDrawable()).start();
-                    else
-                        ((AnimatedVectorDrawableCompat) fab.getDrawable()).start();
                 } else
                     fab.setImageResource(position == 0 ? R.drawable.ic_done_all :
                             R.drawable.ic_clear_all);
