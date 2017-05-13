@@ -95,7 +95,6 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:hapticFeedbackEnabled="true"
-        app:srcCompat="@drawable/done_clear_animation"
         app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal"
         app:useCompatPadding="true"/>
