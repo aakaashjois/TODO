@@ -49,7 +49,7 @@
         android:layout_marginEnd="@dimen/list_item_horizontal_margin"
         android:layout_marginStart="@dimen/list_item_horizontal_margin"
         android:background="@android:color/transparent"
-        android:contentDescription="@string/delete_todo"
+        android:contentDescription="@string/delete_current_todo"
         app:srcCompat="@drawable/ic_delete_item" />
 
 </LinearLayout>
