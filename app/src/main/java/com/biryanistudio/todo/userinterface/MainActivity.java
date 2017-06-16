@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
-import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -29,13 +28,13 @@ import com.biryanistudio.todo.services.CopyListenerService;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ViewPager viewPager;
-    private CoordinatorLayout coordinatorLayout;
-    private FragmentPagerAdapter fragmentPagerAdapter;
-
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
+    private ViewPager viewPager;
+    private CoordinatorLayout coordinatorLayout;
+    private FragmentPagerAdapter fragmentPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,24 +45,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initUi() {
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.activity_list);
-        final TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.clear);
+        coordinatorLayout = findViewById(R.id.activity_list);
+        final TabLayout tabs = findViewById(R.id.tabs);
+        viewPager = findViewById(R.id.viewPager);
+        final FloatingActionButton fab = findViewById(R.id.clear);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.done_clear_animation, null));
+            fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.done_clear_animation, null));
         else
-            fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(),R.drawable.ic_done_all, null));
+            fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_done_all, null));
         fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(fragmentPagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     fab.setImageResource(position == 0 ? R.drawable.clear_done_animation :
                             R.drawable.done_clear_animation);
-                        ((AnimatedVectorDrawable) fab.getDrawable()).start();
+                    ((AnimatedVectorDrawable) fab.getDrawable()).start();
                 } else
                     fab.setImageResource(position == 0 ? R.drawable.ic_done_all :
                             R.drawable.ic_clear_all);
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tabs.setupWithViewPager(viewPager);
         fab.setOnClickListener(this);
         final TextInputEditText taskInput =
-                (TextInputEditText) findViewById(R.id.task_input);
+                findViewById(R.id.task_input);
         taskInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
