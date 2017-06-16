@@ -1,10 +1,12 @@
 package com.biryanistudio.todo.userinterface;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -40,10 +42,10 @@ public class UiUtils {
         Snackbar snackbar = Snackbar.make(parentLayout, action, snackbarLength);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
-        TextView textView = (TextView) snackbarView
+        TextView textView = snackbarView
                 .findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-        TextView actionView = (TextView) snackbarView
+        TextView actionView = snackbarView
                 .findViewById(android.support.design.R.id.snackbar_action);
         actionView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
         actionView.setTypeface(Typeface.create("casual", Typeface.BOLD));
@@ -56,18 +58,33 @@ public class UiUtils {
      * @param text The text displayed in the notification body.
      */
     public static void createNotification(final Context context, final String text) {
-        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(
-                100,
-                new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_logo)
-                        .setContentTitle(context.getString(R.string.todo_added))
-                        .setContentText(text)
-                        .setContentIntent(PendingIntent.getActivity(
-                                context,
-                                (int) System.currentTimeMillis(),
-                                new Intent(context, MainActivity.class),
-                                PendingIntent.FLAG_UPDATE_CURRENT))
-                        .build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(
+                    100,
+                    new NotificationCompat.Builder(context, NotificationChannel.DEFAULT_CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_logo)
+                            .setContentTitle(context.getString(R.string.todo_added))
+                            .setContentText(text)
+                            .setContentIntent(PendingIntent.getActivity(
+                                    context,
+                                    (int) System.currentTimeMillis(),
+                                    new Intent(context, MainActivity.class),
+                                    PendingIntent.FLAG_UPDATE_CURRENT))
+                            .build());
+        } else {
+            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(
+                    100,
+                    new NotificationCompat.Builder(context)
+                            .setSmallIcon(R.drawable.ic_logo)
+                            .setContentTitle(context.getString(R.string.todo_added))
+                            .setContentText(text)
+                            .setContentIntent(PendingIntent.getActivity(
+                                    context,
+                                    (int) System.currentTimeMillis(),
+                                    new Intent(context, MainActivity.class),
+                                    PendingIntent.FLAG_UPDATE_CURRENT))
+                            .build());
+        }
     }
 
     /**
