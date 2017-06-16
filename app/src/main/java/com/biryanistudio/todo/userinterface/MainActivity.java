@@ -12,6 +12,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.KeyEvent;
@@ -27,7 +28,8 @@ import com.biryanistudio.todo.fragments.BaseFragment;
 import com.biryanistudio.todo.fragments.PendingFragment;
 import com.biryanistudio.todo.services.CopyListenerService;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+        TextView.OnEditorActionListener {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewPager viewPager;
     private CoordinatorLayout coordinatorLayout;
     private FragmentPagerAdapter fragmentPagerAdapter;
+    private TextInputEditText taskInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,23 +50,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initUi() {
         coordinatorLayout = findViewById(R.id.activity_list);
-        final TabLayout tabs = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.viewPager);
+        taskInput = findViewById(R.id.task_input);
         final FloatingActionButton fab = findViewById(R.id.clear);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.done_clear_animation, null));
-        else
-            fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_done_all, null));
+        ((TabLayout) findViewById(R.id.tabs)).setupWithViewPager(viewPager);
         fragmentPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager(), this);
+        fab.setOnClickListener(this);
+        taskInput.setOnEditorActionListener(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.done_clear_animation, null));
+        else
+            fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                    R.drawable.ic_done_all, null));
         viewPager.setAdapter(fragmentPagerAdapter);
-        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-
+        viewPager.addOnPageChangeListener(new SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     fab.setImageResource(position == 0 ? R.drawable.clear_done_animation :
                             R.drawable.done_clear_animation);
-                    // Use AnimatedDrawableCompat for LOLLIPOP <= API < N
+                    /*
+                    Use AnimatedDrawableCompat for LOLLIPOP <= API < N
+                     */
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
                         ((AnimatedVectorDrawableCompat) fab.getDrawable()).start();
                     else
@@ -72,26 +81,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     fab.setImageResource(position == 0 ? R.drawable.ic_done_all :
                             R.drawable.ic_clear_all);
                 ((BaseFragment) fragmentPagerAdapter.getItem(position)).updateTasks();
-            }
-        });
-        tabs.setupWithViewPager(viewPager);
-        fab.setOnClickListener(this);
-        final TextInputEditText taskInput =
-                findViewById(R.id.task_input);
-        taskInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_DONE) {
-                    DbTransactions.writeTask(
-                            MainActivity.this, textView.getText().toString().trim());
-                    ((PendingFragment) fragmentPagerAdapter.getItem(0)).updateTasks();
-                    textView.setText(null);
-                    taskInput.clearFocus();
-                    coordinatorLayout.requestFocus();
-                    ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                            .hideSoftInputFromWindow(textView.getWindowToken(), 0);
-                }
-                return true;
             }
         });
     }
@@ -121,5 +110,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         snackbar.show();
+    }
+
+    @Override
+    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+        if (i == EditorInfo.IME_ACTION_DONE) {
+            DbTransactions.writeTask(
+                    MainActivity.this, textView.getText().toString().trim());
+            ((PendingFragment) fragmentPagerAdapter.getItem(0)).updateTasks();
+            textView.setText(null);
+            taskInput.clearFocus();
+            coordinatorLayout.requestFocus();
+            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(textView.getWindowToken(), 0);
+        }
+        return true;
     }
 }
