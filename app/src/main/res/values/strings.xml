@@ -1,20 +1,42 @@
 <resources>
-    <string name="app_name">TODO</string>
-    <string name="text_title">//TODO</string>
-    <string name="text_subtitle">What would you like to do today?</string>
-    <string name="text_not_added_pending_yet">You have not added any // TODOs yet!</string>
-    <string name="text_not_completed">You have not completed any // TODOs yet!</string>
+    <!-- App name -->
+    <string name="app_name">//TODO</string>
 
+    <!-- Tab titles -->
     <string name="pending_tab_title">Pending Tasks</string>
     <string name="completed_tab_title">Completed Tasks</string>
-    <string name="complete_all_todos">Did you completed all TODOs?</string>
-    <string name="clear_all_todos">Clear all checked TODOs?</string>
-    <string name="complete_all_todos_message">Awesome! Enjoy your day.</string>
-    <string name="clear_all_todos_message">Cleared! The list is clean.</string>
+
+    <!-- Snackbar messages -->
+    <string name="complete_all_tasks">Did you complete all TODOs?</string>
+    <string name="clear_all_tasks">Remove all completed TODOs?</string>
+    <string name="complete_all_tasks_message">Awesome! Enjoy your day!</string>
+    <string name="clear_all_tasks_message">Cleared! The list is clean!</string>
+    <string name="delete_current_todo">Delete this TODO?</string>
+    <string name="yes">Yes</string>
+
+    <!-- Hint strings -->
+    <string name="text_subtitle">What would you like to do today?</string>
+    <string name="text_not_added_pending_yet">You have not added any TODOs yet!</string>
+    <string name="text_not_completed">You have not completed any TODOs yet!</string>
+
+    <!-- App shortcut and QS Tile string -->
+    <string name="todo_shortcut">New TODO</string>
+
+
+    <!-- Notification string -->
     <string name="todo_added">"New TODO Added"</string>
 
-    <string name="facebook_app_id">1226886224071788</string>
+    <!-- Path data for vectors -->
+    <string name="clear_all_path_data">M 3,17 L 17,17 L 17,15 L 3,15 Z M 5,13 L 12,13 L 19,13 L 19,11 L 12,11 L 5,11 Z M 7,7 L 7,9 L 21,9 L 21,7 Z</string>
+    <string name="done_all_path_data">M 0.37,13.39 L 5.95,18.97 L 7.37, 17.56 L 1.78, 11.97 Z M 6.1,13.4 L 11.7,19 L 23.7,7 L 22.2,5.6 L 11.7,16.2 L 7.5,12 Z M 10.24,11.98 L 11.66,13.4 L 18.02,7.03 L 16.61,5.62 Z</string>
 
-    <string name="content_description_delete_todo">Delete this TODO</string>
-    <string name="content_description_ad_icon">Ad Icon</string>
+    <!-- Strings for displaying timestamp -->
+    <string name="timestamp_format">%1$s at %2$s</string>
+    <string name="just_now">Just now</string>
+    <string name="few_seconds_ago">Few seconds ago</string>
+    <string name="few_minutes_ago">Few minutes ago</string>
+    <string name="half_hour_ago">About half hour ago</string>
+    <string name="hour_ago">An hour ago</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
 </resources>

@@ -1,8 +1,6 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:textColor">@color/colorPrimary</item>
@@ -26,46 +24,14 @@
         <item name="android:fontFamily">casual</item>
     </style>
 
-    <style name="HandWritingCounterText" parent="TextAppearance.AppCompat.Small">
-        <item name="android:fontFamily">casual</item>
-    </style>
-
-    <style name="HandWritingErrorText" parent="TextAppearance.AppCompat.Small">
-        <item name="android:fontFamily">casual</item>
-        <item name="android:textColor">@android:color/holo_red_light</item>
-    </style>
-
-    <style name="HandWritingCounterOverflowText">
-        <item name="android:textColor">@android:color/holo_red_light</item>
-    </style>
-
     <style name="NewTaskDialog" parent="Theme.AppCompat.Dialog.Alert">
         <item name="android:background">@color/colorPrimaryDark</item>
     </style>
 
-    <style name="TextInputLayoutStyle" parent="Widget.Design.TextInputLayout">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginEnd">@dimen/activity_horizontal_margin</item>
-        <item name="android:layout_marginStart">@dimen/activity_horizontal_margin</item>
-        <item name="android:focusable">true</item>
-        <item name="android:focusableInTouchMode">true</item>
-        <item name="counterTextAppearance">@style/HandWritingCounterText</item>
-        <item name="counterOverflowTextAppearance">@style/HandWritingCounterOverflowText</item>
-        <item name="errorTextAppearance">@style/HandWritingErrorText</item>
-        <item name="hintTextAppearance">@style/TextAppearance.AppCompat.Small</item>
-    </style>
-
-    <style name="TextInputEditTextStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">casual</item>
-        <item name="android:hint">@string/text_subtitle</item>
-        <item name="android:imeOptions">actionDone</item>
-        <item name="android:inputType">text</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
-        <item name="android:textIsSelectable">false</item>
+    <style name="HandWritingEditTextTheme" parent="AppTheme">
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
     </style>
 
 </resources>

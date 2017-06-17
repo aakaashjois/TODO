@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-          package="com.biryanistudio.todo">
+    package="com.biryanistudio.todo">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".TodoApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:hardwareAccelerated="true"
@@ -19,49 +16,77 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name="com.facebook.ads.AudienceNetworkActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme" />
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-
-        <activity android:name=".ui.MainActivity">
+            android:name=".userinterface.MainActivity"
+            android:windowSoftInputMode="adjustNothing">
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
 
             <meta-data
                 android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts"/>
+                android:resource="@xml/shortcuts" />
 
         </activity>
 
-        <service android:name=".utils.CopyListenerService"/>
+        <activity
+            android:name=".userinterface.NewTaskDialogActivity"
+            android:label="@string/todo_shortcut"
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+
+        <activity
+            android:name=".userinterface.ActionTextActivity"
+            android:label="@string/todo_shortcut"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.NoDisplay">
+
+            <intent-filter>
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+        </activity>
 
         <service
-            android:name=".utils.QuickSettingsIntentService"
-            android:icon="@drawable/ic_add_task"
-            android:label="New //TODO"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:name=".services.CopyListenerService"
+            android:process=":copy_listener_service" />
+
+        <service
+            android:name=".services.QuickSettingsInputIntentService"
+            android:icon="@drawable/ic_add_circle"
+            android:label="@string/todo_shortcut"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:process=":qstile_listener_service">
+
             <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".ui.NewTaskDialogActivity"
-            android:theme="@style/Theme.AppCompat.Dialog">
-        </activity>
+        <receiver
+            android:name=".services.TodoStartCopyListenerServiceReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <data android:scheme="package" />
+            </intent-filter>
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="916c170fe1c31528aa3ba2e9651b4152fd6c19a7" />
+        </receiver>
+
     </application>
 
 </manifest>
