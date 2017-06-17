@@ -21,6 +21,6 @@ public class CompletedFragment extends BaseFragment {
     @Override
     public void updateTasks() {
         presenter.setRecyclerViewAdapter();
-        presenter.setEmptyTextView();
+        presenter.setTextViewText();
     }
 }
