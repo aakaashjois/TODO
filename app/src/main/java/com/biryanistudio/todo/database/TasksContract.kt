@@ -18,7 +18,6 @@ object TasksContract {
         companion object {
             internal val TABLE_NAME = "tasks"
             val _ID = BaseColumns._ID
-            val _COUNT = BaseColumns._COUNT
             val COLUMN_NAME_TASK = "task"
             val COLUMN_NAME_TIME_STAMP = "timestamp"
             val COLUMN_NAME_PENDING = "pending"
