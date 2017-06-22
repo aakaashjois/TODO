@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.graphics.Paint
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,8 +22,15 @@ import java.util.*
 
 class TasksAdapter(private val context: Context,
                    private val presenter: FragmentPresenter,
-                   cursor: Cursor) : RecyclerView.Adapter<TasksAdapter.ViewHolder>(),
+                   cursor: Cursor?) : RecyclerView.Adapter<TasksAdapter.ViewHolder>(),
         CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val task: TextView = itemView.findViewById(R.id.task)
+        val time: TextView = itemView.findViewById(R.id.time)
+        val checkBox: CheckBox = itemView.findViewById(R.id.check_box)
+        val delete: ImageButton = itemView.findViewById(R.id.delete)
+    }
 
     /**
      * [<] of all tasks.
@@ -50,7 +58,7 @@ class TasksAdapter(private val context: Context,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.task.alpha = 1f
-        holder.time.text = UiUtils.createTimeStamp(context, timestamps[position])
+        holder.time.text = createTimeStamp(context, timestamps[position])
         holder.task.text = tasks[position]
         holder.checkBox.tag = timestamps[position]
         holder.delete.tag = timestamps[position]
@@ -189,10 +197,41 @@ class TasksAdapter(private val context: Context,
         timestamps.removeAt(itemPosition)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val task: TextView = itemView.findViewById(R.id.task)
-        val time: TextView = itemView.findViewById(R.id.time)
-        val checkBox: CheckBox = itemView.findViewById(R.id.check_box)
-        val delete: ImageButton = itemView.findViewById(R.id.delete)
+    /**
+     * This method creates a formatted timestamp to display for the tasks.
+     * @param millis The timestamp at which the task was created.
+     * *
+     * @return Returns the human readable formatted timestamp.
+     */
+    private fun createTimeStamp(context: Context, millis: String): String {
+        val result: String
+        val calendar = GregorianCalendar.getInstance()
+        val taskMillis = java.lang.Long.parseLong(millis)
+        val currentMillis = calendar.timeInMillis
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        val todayMidnightMillis = calendar.timeInMillis
+        val yesterdayMidnightMillis = todayMidnightMillis - 86400000
+        when (currentMillis - taskMillis) {
+            in 0..1000 -> result = context.getString(R.string.just_now)
+            in 1000..50000 -> result = context.getString(R.string.few_seconds_ago)
+            in 50000..600000 -> result = context.getString(R.string.few_minutes_ago)
+            in 600000..1800000 -> result = context.getString(R.string.half_hour_ago)
+            in 1800000..3600000 -> result = context.getString(R.string.hour_ago)
+            else -> {
+                val day: String
+                val time = DateFormat.getTimeFormat(context).format(taskMillis)
+                if (taskMillis - todayMidnightMillis < 86400000)
+                    day = context.getString(R.string.today)
+                else if (taskMillis in (yesterdayMidnightMillis + 1)..(todayMidnightMillis - 1))
+                    day = context.getString(R.string.yesterday)
+                else
+                    day = DateFormat.getLongDateFormat(context).format(taskMillis)
+                result = context.getString(R.string.timestamp_format, day, time)
+            }
+        }
+        return result
     }
 }

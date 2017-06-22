@@ -19,8 +19,8 @@ class FragmentPagerAdapter(fm: FragmentManager, private val context: Context) :
         when (position) {
             0 -> return pendingFragment
             1 -> return completedFragment
+            else -> return null
         }
-        return null
     }
 
     override fun getCount(): Int {
@@ -31,7 +31,7 @@ class FragmentPagerAdapter(fm: FragmentManager, private val context: Context) :
         when (position) {
             0 -> return context.getString(R.string.pending_tab_title)
             1 -> return context.getString(R.string.completed_tab_title)
+            else -> return super.getPageTitle(position)
         }
-        return super.getPageTitle(position)
     }
 }

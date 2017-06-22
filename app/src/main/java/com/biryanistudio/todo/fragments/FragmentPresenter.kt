@@ -22,11 +22,12 @@ class FragmentPresenter internal constructor(private val fragment: Fragment,
     val coordinatorLayout: View
         get() = fragment.activity.findViewById<View>(R.id.activity_list)
 
-    private val appropriateCursor: Cursor get() {
-        if (fragment is PendingFragment)
-            return DbTransactions.readPendingTasks(fragment.context)
-        else
-            return DbTransactions.readCompletedTasks(fragment.context)
+    private val appropriateCursor: Cursor? get() {
+        when (fragment) {
+            is PendingFragment -> return DbTransactions.readPendingTasks(fragment.context)
+            is CompletedFragment -> return DbTransactions.readCompletedTasks(fragment.context)
+            else -> return null
+        }
     }
 
     internal fun setRecyclerViewAdapter() {
@@ -40,22 +41,13 @@ class FragmentPresenter internal constructor(private val fragment: Fragment,
         recyclerView?.adapter = adapter
     }
 
-    internal fun setTextViewText() {
-        // Set appropriate text for TextView depending on Fragment
-        emptyTextView?.setText(if (fragment is PendingFragment)
-            R.string.text_not_added_pending_yet
-        else
-            R.string.text_not_completed)
-    }
+    // Set appropriate text for TextView depending on Fragment
+    internal fun setTextViewText() = emptyTextView?.setText(if (fragment is PendingFragment)
+        R.string.text_not_added_pending_yet else R.string.text_not_completed)
 
-    internal fun clearPendingTasks() {
-        adapter?.updateAllPendingTasksAsCompleted()
-    }
+    internal fun clearPendingTasks() = adapter?.updateAllPendingTasksAsCompleted()
 
-    internal fun clearCompletedTasks() {
-        adapter?.deleteAllCompletedTasks()
-
-    }
+    internal fun clearCompletedTasks() = adapter?.deleteAllCompletedTasks()
 
     fun handleEmptyView(showEmptyView: Boolean) {
         if (showEmptyView) {

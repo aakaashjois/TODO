@@ -14,24 +14,24 @@ class NewTaskDialogActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val dialog = Dialog(this, R.style.NewTaskDialog)
-        dialog.setContentView(R.layout.activity_new_task_dialog)
-        dialog.setCancelable(true)
-        dialog.setCanceledOnTouchOutside(true)
-        dialog.setOnCancelListener { finish() }
-        dialog.setOnShowListener {
-            dialog_task_input.requestFocus()
-            dialog_task_input.setOnEditorActionListener { textView, i, _ ->
-                if (i == EditorInfo.IME_ACTION_DONE) {
-                    val text = textView.text.toString().trim { it <= ' ' }
-                    DbTransactions.writeTask(this, text)
-                    dialog.dismiss()
-                    UiUtils.createNotification(this, text)
-                    finish()
+        Dialog(this, R.style.NewTaskDialog).apply {
+            setContentView(R.layout.activity_new_task_dialog)
+            setCancelable(true)
+            setCanceledOnTouchOutside(true)
+            setOnCancelListener { finish() }
+            setOnShowListener {
+                dialog_task_input.requestFocus()
+                dialog_task_input.setOnEditorActionListener { textView, i, _ ->
+                    if (i == EditorInfo.IME_ACTION_DONE) {
+                        val text = textView.text.toString().trim { it <= ' ' }
+                        DbTransactions.writeTask(this@NewTaskDialogActivity, text)
+                        this.dismiss()
+                        UiUtils.createNotification(this@NewTaskDialogActivity, text)
+                        finish()
+                    }
+                    true
                 }
-                true
             }
-        }
-        dialog.show()
+        }.show()
     }
 }
