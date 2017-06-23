@@ -20,7 +20,7 @@ object TasksContract {
             val _ID = BaseColumns._ID
             val COLUMN_NAME_TASK = "task"
             val COLUMN_NAME_TIME_STAMP = "timestamp"
-            val COLUMN_NAME_PENDING = "pending"
+            val COLUMN_NAME_PENDING = "completed"
         }
     }
 }
