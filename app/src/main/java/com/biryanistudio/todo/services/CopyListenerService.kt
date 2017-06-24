@@ -6,8 +6,8 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import com.biryanistudio.todo.TodoApplication
 import com.biryanistudio.todo.database.TodoItem
-import com.biryanistudio.todo.userinterface.UiUtils
 import io.realm.Realm
 
 class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedListener {
@@ -57,13 +57,13 @@ class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedList
     private fun saveTextToDatabase(text: String) {
         Realm.getDefaultInstance().executeTransaction {
             it.createObject(TodoItem::class.java).apply {
-                completed = false
+                completed = 0
                 task = text
                 timestamp = System.currentTimeMillis()
             }
             it.close()
         }
-        UiUtils.createNotification(this, text)
+        TodoApplication.createNotification(this, text)
         clipboardManager?.addPrimaryClipChangedListener(this)
     }
 }

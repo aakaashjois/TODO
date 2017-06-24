@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
+import com.biryanistudio.todo.TodoApplication
 
 import com.biryanistudio.todo.database.TodoItem
 import io.realm.Realm
@@ -18,13 +19,13 @@ class ActionTextActivity : Activity() {
                 .trim { it <= ' ' }
         Realm.getDefaultInstance().executeTransaction {
             it.createObject(TodoItem::class.java).apply {
-                completed = false
+                completed = 0
                 task = text
                 timestamp = System.currentTimeMillis()
             }
             it.close()
         }
-        UiUtils.createNotification(this, text)
+        TodoApplication.createNotification(this, text)
         finish()
     }
 }

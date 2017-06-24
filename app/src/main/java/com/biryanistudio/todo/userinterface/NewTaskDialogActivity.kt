@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.inputmethod.EditorInfo
 
 import com.biryanistudio.todo.R
+import com.biryanistudio.todo.TodoApplication
 import com.biryanistudio.todo.database.TodoItem
 import io.realm.Realm
 
@@ -27,14 +28,14 @@ class NewTaskDialogActivity : AppCompatActivity() {
                         val text = textView.text.toString().trim { it <= ' ' }
                         Realm.getDefaultInstance().executeTransaction {
                             it.createObject(TodoItem::class.java).apply {
-                                completed = false
+                                completed = 0
                                 task = text
                                 timestamp = System.currentTimeMillis()
                             }
                             it.close()
                         }
                         this.dismiss()
-                        UiUtils.createNotification(this@NewTaskDialogActivity, text)
+                        TodoApplication.createNotification(this@NewTaskDialogActivity, text)
                         finish()
                     }
                     true

@@ -12,8 +12,8 @@ import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import com.biryanistudio.todo.R
+import com.biryanistudio.todo.TodoApplication
 import com.biryanistudio.todo.database.TodoItem
-import com.biryanistudio.todo.userinterface.UiUtils
 import io.realm.Realm
 import io.realm.RealmBasedRecyclerViewAdapter
 import io.realm.RealmResults
@@ -48,7 +48,7 @@ class TodoAdapter(
                 delete.tag = this@with.id
                 checkBox.alpha = 1f
                 task.alpha = 1f
-                if (!this@with.completed) {
+                if (this@with.completed == 1) {
                     checkBox.isChecked = true
                     checkBox.alpha = 0.7f
                     task.alpha = 0.7f
@@ -57,13 +57,13 @@ class TodoAdapter(
                 checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                     Realm.getDefaultInstance().executeTransaction {
                         it.where(TodoItem::class.java)
-                                .equalTo("id", buttonView.tag as Long)
-                                .findFirst().completed = isChecked
+                                .equalTo(TodoItem.ID, buttonView.tag as Long)
+                                .findFirst().completed = if (isChecked) 1 else 0
                         it.close()
                     }
                 }
                 delete.setOnClickListener {
-                    UiUtils.createSnackBar(context,
+                    TodoApplication.createSnackBar(context,
                             (context as Activity).findViewById(R.id.activity_list),
                             context.getString(R.string.delete_current_todo),
                             Snackbar.LENGTH_SHORT).apply {
@@ -71,7 +71,7 @@ class TodoAdapter(
                             this.dismiss()
                             Realm.getDefaultInstance().executeTransaction {
                                 it.where(TodoItem::class.java)
-                                        .equalTo("id", delete.tag as Long)
+                                        .equalTo(TodoItem.ID, delete.tag as Long)
                                         .findAll().deleteAllFromRealm()
                                 it.close()
                             }

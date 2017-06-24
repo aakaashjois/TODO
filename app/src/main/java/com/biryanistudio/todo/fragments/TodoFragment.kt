@@ -23,16 +23,18 @@ class TodoFragment : Fragment() {
     var page: Int? = null
 
     companion object {
+
+        val PAGE = "page"
         fun newInstance(page: Int): TodoFragment {
             return TodoFragment().apply {
-                arguments = Bundle().apply { putFloat("page", page.toFloat()) }
+                arguments = Bundle().apply { putFloat(PAGE, page.toFloat()) }
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        page = arguments.getFloat("page", -1f).toInt()
+        page = arguments.getFloat(PAGE, -1f).toInt()
     }
 
     override fun onCreateView(inflater: LayoutInflater?,
@@ -40,15 +42,14 @@ class TodoFragment : Fragment() {
                               @Nullable savedInstanceState: Bundle?): View? {
         val realm = Realm.getDefaultInstance()
         val realmResults = realm.where(TodoItem::class.java)
-                ?.equalTo("completed", page)
-                ?.findAllSorted("timeStamp", Sort.DESCENDING)
-        realm.close()
+                ?.equalTo(TodoItem.COMPLETED, page?.compareTo(1))
+                ?.findAllSorted(TodoItem.TIMESTAMP, Sort.DESCENDING)
         return inflater?.inflate(R.layout.list_fragment, container, false)?.apply {
             when (page) {
                 0 -> empty_view.text = context.getString(R.string.text_not_added_pending_yet)
                 1 -> empty_view.text = context.getString(R.string.text_not_completed)
             }
-            recycler_view?.setAdapter(TodoAdapter(activity, realmResults, true, true))
+            recycler_view?.setAdapter(TodoAdapter(activity, realmResults, true, false))
         }
     }
 }
