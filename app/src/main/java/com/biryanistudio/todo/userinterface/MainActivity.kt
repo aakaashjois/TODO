@@ -6,7 +6,6 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.design.widget.TabLayout
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.view.ViewPager
@@ -20,15 +19,14 @@ import android.widget.TextView
 
 import com.biryanistudio.todo.R
 import com.biryanistudio.todo.adapters.FragmentPagerAdapter
-import com.biryanistudio.todo.database.DbTransactions
-import com.biryanistudio.todo.fragments.BaseFragment
-import com.biryanistudio.todo.fragments.PendingFragment
+import com.biryanistudio.todo.database.TodoItem
 import com.biryanistudio.todo.services.CopyListenerService
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
-
 import kotlinx.android.synthetic.main.view_pager.*
 
-class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEditorActionListener, ViewPager.OnPageChangeListener {
+class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEditorActionListener,
+        ViewPager.OnPageChangeListener {
 
     override fun onPageScrollStateChanged(state: Int) {}
 
@@ -51,22 +49,38 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
         else getString(R.string.clear_all_tasks)
         val actionMessage = if (currentTab == 0) getString(R.string.complete_all_tasks_message)
         else getString(R.string.clear_all_tasks_message)
-        val snackbar = UiUtils.createSnackBar(this@MainActivity, activity_list,
-                action, Snackbar.LENGTH_LONG)
-        snackbar.setAction(R.string.yes) {
-            ((tasks_view_pager.adapter as FragmentPagerAdapter)
-                    .getItem(currentTab) as BaseFragment).clearAllTasks()
-            snackbar.dismiss()
-            UiUtils.createSnackBar(this@MainActivity, activity_list, actionMessage,
-                    Snackbar.LENGTH_SHORT).show()
-        }
-        snackbar.show()
+        UiUtils.createSnackBar(this@MainActivity, activity_list,
+                action, Snackbar.LENGTH_LONG).apply {
+            setAction(R.string.yes) {
+                when (currentTab) {
+                    0 -> Realm.getDefaultInstance().executeTransaction {
+                        it.where(TodoItem::class.java).equalTo("completed", false).findAll()
+                                .forEach { it.completed = true }
+                        it.close()
+                    }
+                    1 -> Realm.getDefaultInstance().executeTransaction {
+                        it.where(TodoItem::class.java).equalTo("completed", true).findAll()
+                                .deleteAllFromRealm()
+                        it.close()
+                    }
+                }
+                this.dismiss()
+                UiUtils.createSnackBar(this@MainActivity, activity_list, actionMessage,
+                        Snackbar.LENGTH_SHORT).show()
+            }
+        }.show()
     }
 
     override fun onEditorAction(textView: TextView, i: Int, keyEvent: KeyEvent): Boolean {
         if (i == EditorInfo.IME_ACTION_DONE) {
-            DbTransactions.writeTask(this@MainActivity, textView.text.toString().trim { it <= ' ' })
-            ((tasks_view_pager.adapter as FragmentPagerAdapter).getItem(0) as PendingFragment).updateTasks()
+            Realm.getDefaultInstance().executeTransaction {
+                it.createObject(TodoItem::class.java).apply {
+                    completed = false
+                    task = textView.text.toString().trim { it <= ' ' }
+                    timestamp = System.currentTimeMillis()
+                }
+                it.close()
+            }
             textView.text = null
             task_input.clearFocus()
             activity_list.requestFocus()
@@ -78,19 +92,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
 
     override fun onPageSelected(position: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            clear.setImageResource(if (position == 0) R.drawable.clear_done_animation else
-                R.drawable.done_clear_animation)
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) (clear.drawable as
-                    AnimatedVectorDrawableCompat).start()
+            clear.setImageResource(if (position == 0) R.drawable.clear_done_animation
+            else R.drawable.done_clear_animation)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
+                (clear.drawable as AnimatedVectorDrawableCompat).start()
             else (clear.drawable as AnimatedVectorDrawable).start()
-        } else clear.setImageResource(if (position == 0) R.drawable.ic_done_all else
-            R.drawable.ic_clear_all)
-        ((tasks_view_pager.adapter as FragmentPagerAdapter).getItem(position) as
-                BaseFragment).updateTasks()
+        } else clear.setImageResource(if (position == 0) R.drawable.ic_done_all
+        else R.drawable.ic_clear_all)
     }
 
     private fun initUi() {
-        (findViewById<View>(R.id.tabs) as TabLayout).setupWithViewPager(tasks_view_pager)
+        tabs.setupWithViewPager(tasks_view_pager)
         clear.setOnClickListener(this)
         task_input.setOnEditorActionListener(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) clear.setImageDrawable(

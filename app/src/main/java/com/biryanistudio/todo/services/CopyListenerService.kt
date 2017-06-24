@@ -6,8 +6,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import com.biryanistudio.todo.database.DbTransactions
+import com.biryanistudio.todo.database.TodoItem
 import com.biryanistudio.todo.userinterface.UiUtils
+import io.realm.Realm
 
 class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedListener {
     private var clipboardManager: ClipboardManager? = null
@@ -54,8 +55,15 @@ class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedList
     }
 
     private fun saveTextToDatabase(text: String) {
-        val newRowId = DbTransactions.writeTask(this, text)
-        if (newRowId != -1L) UiUtils.createNotification(this, text)
+        Realm.getDefaultInstance().executeTransaction {
+            it.createObject(TodoItem::class.java).apply {
+                completed = false
+                task = text
+                timestamp = System.currentTimeMillis()
+            }
+            it.close()
+        }
+        UiUtils.createNotification(this, text)
         clipboardManager?.addPrimaryClipChangedListener(this)
     }
 }

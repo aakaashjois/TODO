@@ -4,7 +4,7 @@ import android.app.Application
 import io.realm.Realm
 
 /**
- * Created by aakaashjois on 23/06/17.
+ * Created by aakaashjois on 23/06/17
  */
 
 class TodoApplication : Application() {

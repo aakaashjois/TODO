@@ -1,7 +1,9 @@
 package com.biryanistudio.todo.adapters
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
+import android.support.design.widget.Snackbar
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +13,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.biryanistudio.todo.R
 import com.biryanistudio.todo.database.TodoItem
+import com.biryanistudio.todo.userinterface.UiUtils
+import io.realm.Realm
 import io.realm.RealmBasedRecyclerViewAdapter
 import io.realm.RealmResults
 import io.realm.RealmViewHolder
@@ -22,7 +26,7 @@ import java.util.*
 
 class TodoAdapter(
         context: Context,
-        realmResults: RealmResults<TodoItem>,
+        realmResults: RealmResults<TodoItem>?,
         automaticUpdate: Boolean,
         animateResults: Boolean
 ) : RealmBasedRecyclerViewAdapter<TodoItem, TodoAdapter.ViewHolder>(
@@ -51,11 +55,28 @@ class TodoAdapter(
                     task.paintFlags = task.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
                 checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-                    //TODO: Update RealmObject completed value based isChecked value
+                    Realm.getDefaultInstance().executeTransaction {
+                        it.where(TodoItem::class.java)
+                                .equalTo("id", buttonView.tag as Long)
+                                .findFirst().completed = isChecked
+                        it.close()
+                    }
                 }
                 delete.setOnClickListener {
-                    //TODO: Display confirmation Snackbar
-                    //TODO: Delete RealmObject
+                    UiUtils.createSnackBar(context,
+                            (context as Activity).findViewById(R.id.activity_list),
+                            context.getString(R.string.delete_current_todo),
+                            Snackbar.LENGTH_SHORT).apply {
+                        setAction(context.getString(R.string.yes)) {
+                            this.dismiss()
+                            Realm.getDefaultInstance().executeTransaction {
+                                it.where(TodoItem::class.java)
+                                        .equalTo("id", delete.tag as Long)
+                                        .findAll().deleteAllFromRealm()
+                                it.close()
+                            }
+                        }
+                    }.show()
                 }
             }
         }

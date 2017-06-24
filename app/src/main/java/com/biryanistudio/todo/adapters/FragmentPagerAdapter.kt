@@ -6,19 +6,15 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 
 import com.biryanistudio.todo.R
-import com.biryanistudio.todo.fragments.CompletedFragment
-import com.biryanistudio.todo.fragments.PendingFragment
+import com.biryanistudio.todo.fragments.TodoFragment
 
 class FragmentPagerAdapter(fm: FragmentManager, private val context: Context) :
         FragmentStatePagerAdapter(fm) {
 
-    private val pendingFragment: PendingFragment = PendingFragment()
-    private val completedFragment: CompletedFragment = CompletedFragment()
-
     override fun getItem(position: Int): Fragment? {
         when (position) {
-            0 -> return pendingFragment
-            1 -> return completedFragment
+            0 -> return TodoFragment.newInstance(position)
+            1 -> return TodoFragment.newInstance(position)
             else -> return null
         }
     }
