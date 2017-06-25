@@ -92,7 +92,6 @@ class TodoAdapter(
                     }.show()
                 }
 
-
             }
         }
     }

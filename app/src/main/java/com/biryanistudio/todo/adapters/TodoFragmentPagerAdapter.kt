@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import com.biryanistudio.todo.R
 import com.biryanistudio.todo.fragments.TodoFragment
 
-class FragmentPagerAdapter(fm: FragmentManager, private val context: Context) :
+class TodoFragmentPagerAdapter(fm: FragmentManager, private val context: Context) :
         FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment? {
