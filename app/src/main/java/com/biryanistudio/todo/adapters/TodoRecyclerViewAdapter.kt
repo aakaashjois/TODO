@@ -16,7 +16,6 @@ import io.realm.OrderedRealmCollection
 import io.realm.Realm
 import io.realm.RealmRecyclerViewAdapter
 import java.util.*
-import kotlin.concurrent.thread
 
 /**
  * Created by Aakaash Jois.
@@ -61,19 +60,17 @@ class TodoRecyclerViewAdapter(private val context: Context,
                     }
                 }
                 checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-                    thread {
-                        Realm.getDefaultInstance().use {
-                            it.executeTransaction {
-                                it.where(TodoItem::class.java)
-                                        .equalTo(TodoItem.ID, buttonView.tag.toString())
-                                        .findFirst().apply {
-                                    this.completed = if (isChecked) 1 else 0
-                                }
+                    Realm.getDefaultInstance().use {
+                        it.executeTransactionAsync {
+                            it.where(TodoItem::class.java)
+                                    .equalTo(TodoItem.ID, buttonView.tag.toString())
+                                    .findFirst().apply {
+                                this.completed = if (isChecked) 1 else 0
                             }
                         }
                     }
                 }
-                delete.setOnClickListener {
+                delete.setOnClickListener { view ->
                     com.biryanistudio.todo.TodoApplication.createSnackBar(context,
                             (context as Activity).findViewById(
                                     com.biryanistudio.todo.R.id.activity_list),
@@ -81,13 +78,11 @@ class TodoRecyclerViewAdapter(private val context: Context,
                             android.support.design.widget.Snackbar.LENGTH_SHORT).apply {
                         setAction(context.getString(com.biryanistudio.todo.R.string.yes)) {
                             this.dismiss()
-                            thread {
-                                Realm.getDefaultInstance().use {
-                                    it.executeTransaction {
-                                        it.where(TodoItem::class.java)
-                                                .equalTo(TodoItem.ID, view.tag.toString())
-                                                .findFirst().deleteFromRealm()
-                                    }
+                            Realm.getDefaultInstance().use {
+                                it.executeTransactionAsync {
+                                    it.where(TodoItem::class.java)
+                                            .equalTo(TodoItem.ID, view.tag.toString())
+                                            .findFirst().deleteFromRealm()
                                 }
                             }
                         }

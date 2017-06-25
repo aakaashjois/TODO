@@ -10,6 +10,7 @@ import com.biryanistudio.todo.adapters.TodoRecyclerViewAdapter
 import com.biryanistudio.todo.database.TodoItem
 import io.realm.Realm
 import io.realm.Sort
+import kotlinx.android.synthetic.main.list_fragment.*
 import kotlinx.android.synthetic.main.list_fragment.view.*
 import kotlin.properties.Delegates.notNull
 
@@ -44,15 +45,31 @@ class TodoFragment : Fragment() {
         realm = Realm.getDefaultInstance()
         val realmResults = realm.where(TodoItem::class.java).equalTo(TodoItem.COMPLETED, page)
                 .findAllSorted(TodoItem.TIMESTAMP, Sort.DESCENDING)
-        return inflater.inflate(R.layout.list_fragment, container, false).apply {
-            recycler_view.emptyView = empty_view
+        val view = inflater.inflate(R.layout.list_fragment, container, false).apply {
             recycler_view.adapter = TodoRecyclerViewAdapter(activity, realmResults)
             empty_view.text = when (page) {
                 0 -> context.getString(R.string.text_not_added_pending_yet)
                 1 -> context.getString(R.string.text_not_completed)
                 else -> null
             }
+            if (realmResults.size == 0) {
+                recycler_view.visibility = View.GONE
+                empty_view.visibility = View.VISIBLE
+            } else {
+                recycler_view.visibility = View.VISIBLE
+                empty_view.visibility = View.GONE
+            }
         }
+        realmResults.addChangeListener({ result ->
+            if (result.size == 0) {
+                recycler_view.visibility = View.GONE
+                empty_view.visibility = View.VISIBLE
+            } else {
+                recycler_view.visibility = View.VISIBLE
+                empty_view.visibility = View.GONE
+            }
+        })
+        return view
     }
 
     override fun onDestroy() {

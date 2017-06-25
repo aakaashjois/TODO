@@ -22,7 +22,6 @@ import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.view_pager.*
 import java.util.*
-import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,27 +33,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         startService(Intent(this, CopyListenerService::class.java))
-        initUi()
-    }
-
-    private fun initUi() {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) clear.setImageDrawable(
                 ResourcesCompat.getDrawable(resources, R.drawable.done_clear_animation, null))
         else clear.setImageDrawable(
                 ResourcesCompat.getDrawable(resources, R.drawable.ic_done_all, null))
-
         clear.setOnClickListener {
-            val currentTab = tasks_view_pager.currentItem
-            val action = if (currentTab == 0) getString(R.string.complete_all_tasks)
-            else getString(R.string.clear_all_tasks)
             TodoApplication.createSnackBar(this@MainActivity, activity_list,
-                    action, Snackbar.LENGTH_LONG).apply {
+                    if (tasks_view_pager.currentItem == 0) getString(R.string.complete_all_tasks)
+                    else getString(R.string.clear_all_tasks), Snackbar.LENGTH_LONG).apply {
                 setAction(R.string.yes) {
-                    when (currentTab) {
-                        0 -> thread {
+                    when (tasks_view_pager.currentItem) {
+                        0 -> {
                             Realm.getDefaultInstance().use {
-                                it.executeTransaction {
+                                it.executeTransactionAsync {
                                     it.where(TodoItem::class.java).equalTo(TodoItem.COMPLETED, 0)
                                             .findAll().forEach {
                                         it.completed = 1
@@ -66,9 +57,9 @@ class MainActivity : AppCompatActivity() {
                                     getString(R.string.complete_all_tasks_message),
                                     Snackbar.LENGTH_SHORT).show()
                         }
-                        1 -> thread {
+                        1 -> {
                             Realm.getDefaultInstance().use {
-                                it.executeTransaction {
+                                it.executeTransactionAsync {
                                     it.where(TodoItem::class.java).equalTo(TodoItem.COMPLETED, 1)
                                             .findAll().deleteAllFromRealm()
                                 }
@@ -82,7 +73,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }.show()
         }
-
         task_input.setOnEditorActionListener({ textView, i, _ ->
             if (i == EditorInfo.IME_ACTION_DONE) {
                 Realm.getDefaultInstance().use {
@@ -103,7 +93,6 @@ class MainActivity : AppCompatActivity() {
             }
             true
         })
-
         tasks_view_pager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int)
                     = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

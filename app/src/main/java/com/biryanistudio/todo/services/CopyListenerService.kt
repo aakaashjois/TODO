@@ -10,7 +10,6 @@ import com.biryanistudio.todo.TodoApplication
 import com.biryanistudio.todo.database.TodoItem
 import io.realm.Realm
 import java.util.*
-import kotlin.concurrent.thread
 
 class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedListener {
 
@@ -40,16 +39,14 @@ class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedList
                 else clipText.replace("// Todo", "")
                 clipText = clipText.trim { it <= ' ' }
                 if (!clipText.isEmpty()) {
-                    thread {
-                        Realm.getDefaultInstance().use {
-                            it.executeTransaction {
-                                it.insertOrUpdate(TodoItem().apply {
-                                    id = UUID.randomUUID().toString()
-                                    completed = 0
-                                    task = clipText
-                                    timestamp = System.currentTimeMillis()
-                                })
-                            }
+                    Realm.getDefaultInstance().use {
+                        it.executeTransactionAsync {
+                            it.insertOrUpdate(TodoItem().apply {
+                                id = UUID.randomUUID().toString()
+                                completed = 0
+                                task = clipText
+                                timestamp = System.currentTimeMillis()
+                            })
                         }
                     }
                     TodoApplication.createNotification(this, clipText)
