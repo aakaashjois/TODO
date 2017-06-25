@@ -12,7 +12,7 @@ import android.view.View
 
 class TodoRecyclerView : RecyclerView {
 
-    var mEmptyView: View? = null
+    lateinit var emptyView: View
 
     private val mDataObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onChanged() {
@@ -35,9 +35,9 @@ class TodoRecyclerView : RecyclerView {
     }
 
     private fun updateEmptyView() {
-        if (mEmptyView != null && adapter != null) {
+        if (adapter != null) {
             with(adapter.itemCount == 0) {
-                mEmptyView?.visibility = if (this) View.VISIBLE else View.GONE
+                emptyView.visibility = if (this) View.VISIBLE else View.GONE
                 visibility = if (this) View.GONE else View.VISIBLE
             }
         }

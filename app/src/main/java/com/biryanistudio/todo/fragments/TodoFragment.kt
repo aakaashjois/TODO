@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.biryanistudio.todo.R
-import com.biryanistudio.todo.adapters.TodoAdapter
+import com.biryanistudio.todo.adapters.TodoRecyclerViewAdapter
 import com.biryanistudio.todo.database.TodoItem
 import io.realm.Realm
 import io.realm.Sort
-import kotlinx.android.synthetic.main.empty_view_holder.view.*
 import kotlinx.android.synthetic.main.list_fragment.view.*
+import kotlin.properties.Delegates.notNull
 
 /**
  * Created by Aakaash Jois.
@@ -20,7 +20,8 @@ import kotlinx.android.synthetic.main.list_fragment.view.*
 
 class TodoFragment : Fragment() {
 
-    var page: Int? = null
+    var page: Int by notNull()
+    lateinit var realm: Realm
 
     companion object {
 
@@ -40,17 +41,22 @@ class TodoFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        //TODO: Replace Realm with Realm extensions
-        val realm = Realm.getDefaultInstance()
-        val realmResults = realm.where(TodoItem::class.java)
-                ?.equalTo(TodoItem.COMPLETED, page)
-                ?.findAllSorted(TodoItem.TIMESTAMP, Sort.DESCENDING)
+        realm = Realm.getDefaultInstance()
+        val realmResults = realm.where(TodoItem::class.java).equalTo(TodoItem.COMPLETED, page)
+                .findAllSorted(TodoItem.TIMESTAMP, Sort.DESCENDING)
         return inflater.inflate(R.layout.list_fragment, container, false).apply {
-            when (page) {
-                0 -> empty_view.text = context.getString(R.string.text_not_added_pending_yet)
-                1 -> empty_view.text = context.getString(R.string.text_not_completed)
+            recycler_view.emptyView = empty_view
+            recycler_view.adapter = TodoRecyclerViewAdapter(activity, realmResults)
+            empty_view.text = when (page) {
+                0 -> context.getString(R.string.text_not_added_pending_yet)
+                1 -> context.getString(R.string.text_not_completed)
+                else -> null
             }
-            recycler_view.setAdapter(TodoAdapter(activity, realmResults, true, false))
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 }

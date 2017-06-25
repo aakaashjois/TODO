@@ -18,11 +18,10 @@ import com.biryanistudio.todo.TodoApplication
 import com.biryanistudio.todo.adapters.TodoFragmentPagerAdapter
 import com.biryanistudio.todo.database.TodoItem
 import com.biryanistudio.todo.services.CopyListenerService
-import com.vicpin.krealmextensions.delete
-import com.vicpin.krealmextensions.query
-import com.vicpin.krealmextensions.save
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.view_pager.*
+import java.util.*
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
@@ -49,27 +48,35 @@ class MainActivity : AppCompatActivity() {
             val currentTab = tasks_view_pager.currentItem
             val action = if (currentTab == 0) getString(R.string.complete_all_tasks)
             else getString(R.string.clear_all_tasks)
-            val actionMessage = if (currentTab == 0) getString(R.string.complete_all_tasks_message)
-            else getString(R.string.clear_all_tasks_message)
             TodoApplication.createSnackBar(this@MainActivity, activity_list,
                     action, Snackbar.LENGTH_LONG).apply {
                 setAction(R.string.yes) {
                     when (currentTab) {
                         0 -> thread {
-                            TodoItem().query { query -> query.equalTo(TodoItem.COMPLETED, 0) }
-                                    .forEach {
+                            Realm.getDefaultInstance().use {
+                                it.executeTransaction {
+                                    it.where(TodoItem::class.java).equalTo(TodoItem.COMPLETED, 0)
+                                            .findAll().forEach {
                                         it.completed = 1
-                                        it.save()
                                     }
+                                }
+                            }
                             this.dismiss()
                             TodoApplication.createSnackBar(this@MainActivity, activity_list,
-                                    actionMessage, Snackbar.LENGTH_SHORT).show()
+                                    getString(R.string.complete_all_tasks_message),
+                                    Snackbar.LENGTH_SHORT).show()
                         }
                         1 -> thread {
-                            TodoItem().delete { query -> query.equalTo(TodoItem.COMPLETED, 1) }
+                            Realm.getDefaultInstance().use {
+                                it.executeTransaction {
+                                    it.where(TodoItem::class.java).equalTo(TodoItem.COMPLETED, 1)
+                                            .findAll().deleteAllFromRealm()
+                                }
+                            }
                             this.dismiss()
                             TodoApplication.createSnackBar(this@MainActivity, activity_list,
-                                    actionMessage, Snackbar.LENGTH_SHORT).show()
+                                    getString(R.string.clear_all_tasks_message),
+                                    Snackbar.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -78,12 +85,15 @@ class MainActivity : AppCompatActivity() {
 
         task_input.setOnEditorActionListener({ textView, i, _ ->
             if (i == EditorInfo.IME_ACTION_DONE) {
-                thread {
-                    TodoItem().apply {
-                        completed = 0
-                        task = textView.text.toString().trim { it <= ' ' }
-                        timestamp = System.currentTimeMillis()
-                    }.save()
+                Realm.getDefaultInstance().use {
+                    it.executeTransaction {
+                        it.insertOrUpdate(TodoItem().apply {
+                            id = UUID.randomUUID().toString()
+                            completed = 0
+                            task = textView.text.toString().trim { it <= ' ' }
+                            timestamp = System.currentTimeMillis()
+                        })
+                    }
                 }
                 textView.text = null
                 task_input.clearFocus()

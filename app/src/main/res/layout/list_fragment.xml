@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:paddingBottom="@dimen/list_item_vertical_margin"
-    android:paddingEnd="@dimen/activity_horizontal_margin"
-    android:paddingStart="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/list_item_vertical_margin"
-    android:scrollbarStyle="outsideOverlay"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:rrvEmptyLayoutId="@layout/empty_view_holder"
-    app:rrvIsRefreshable="false"
-    app:rrvLayoutType="LinearLayout"
-    app:rrvSwipeToDelete="false" />
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <com.biryanistudio.todo.userinterface.TodoRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/list_item_vertical_margin"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/list_item_vertical_margin"
+        android:scrollbarStyle="outsideOverlay"
+        app:layoutManager="LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" />
+
+</LinearLayout>
