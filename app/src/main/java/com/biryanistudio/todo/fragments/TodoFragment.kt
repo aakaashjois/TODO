@@ -38,8 +38,7 @@ class TodoFragment : Fragment() {
         page = arguments.getFloat(PAGE, -1f).toInt()
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         //TODO: Replace Realm with Realm extensions
         val realm = Realm.getDefaultInstance()
