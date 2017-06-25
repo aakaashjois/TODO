@@ -8,7 +8,8 @@ import android.content.Intent
 import android.os.IBinder
 import com.biryanistudio.todo.TodoApplication
 import com.biryanistudio.todo.database.TodoItem
-import io.realm.Realm
+import com.vicpin.krealmextensions.save
+import kotlin.concurrent.thread
 
 class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedListener {
     private var clipboardManager: ClipboardManager? = null
@@ -48,22 +49,17 @@ class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedList
                     clipText.replace("// Todo", "")
                 clipText = clipText.trim { it <= ' ' }
                 if (!clipText.trim { it <= ' ' }.isEmpty()) {
-                    saveTextToDatabase(clipText)
+                    thread {
+                        TodoItem().apply {
+                            completed = 0
+                            task = clipText
+                            timestamp = System.currentTimeMillis()
+                        }.save()
+                    }
+                    TodoApplication.createNotification(this, clipText)
+                    clipboardManager?.addPrimaryClipChangedListener(this)
                 }
             }
         }
-    }
-
-    private fun saveTextToDatabase(text: String) {
-        Realm.getDefaultInstance().executeTransaction {
-            it.createObject(TodoItem::class.java).apply {
-                completed = 0
-                task = text
-                timestamp = System.currentTimeMillis()
-            }
-            it.close()
-        }
-        TodoApplication.createNotification(this, text)
-        clipboardManager?.addPrimaryClipChangedListener(this)
     }
 }

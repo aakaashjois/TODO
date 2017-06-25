@@ -17,7 +17,8 @@ import com.biryanistudio.todo.userinterface.MainActivity
 import io.realm.Realm
 
 /**
- * Created by aakaashjois on 23/06/17
+ * Created by Aakaash Jois.
+ * 23/06/17 - 9:20 AM.
  */
 
 class TodoApplication : Application() {
@@ -71,8 +72,10 @@ class TodoApplication : Application() {
                 setSmallIcon(R.drawable.ic_logo)
                 setContentTitle(context.getString(R.string.todo_added))
                 setContentText(text)
-                setContentIntent(PendingIntent.getActivity(context, System.currentTimeMillis().toInt(),
-                        Intent(context, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT))
+                setContentIntent(PendingIntent.getActivity(context,
+                        System.currentTimeMillis().toInt(),
+                        Intent(context, MainActivity::class.java),
+                        PendingIntent.FLAG_UPDATE_CURRENT))
             }.build())
         }
     }

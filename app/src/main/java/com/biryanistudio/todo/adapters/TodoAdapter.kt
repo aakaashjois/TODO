@@ -14,14 +14,18 @@ import android.widget.TextView
 import com.biryanistudio.todo.R
 import com.biryanistudio.todo.TodoApplication
 import com.biryanistudio.todo.database.TodoItem
-import io.realm.Realm
+import com.vicpin.krealmextensions.delete
+import com.vicpin.krealmextensions.queryFirst
+import com.vicpin.krealmextensions.save
 import io.realm.RealmBasedRecyclerViewAdapter
 import io.realm.RealmResults
 import io.realm.RealmViewHolder
 import java.util.*
+import kotlin.concurrent.thread
 
 /**
- * Created by aakaashjois on 23/06/17
+ * Created by Aakaash Jois.
+ * 23/06/17 - 9:20 AM.
  */
 
 class TodoAdapter(
@@ -29,14 +33,15 @@ class TodoAdapter(
         realmResults: RealmResults<TodoItem>?,
         automaticUpdate: Boolean,
         animateResults: Boolean
-) : RealmBasedRecyclerViewAdapter<TodoItem, TodoAdapter.ViewHolder>(
-        context, realmResults, automaticUpdate, animateResults) {
+) : RealmBasedRecyclerViewAdapter<TodoItem, TodoAdapter.ViewHolder>(context, realmResults,
+        automaticUpdate, animateResults) {
 
     class ViewHolder(itemView: View) : RealmViewHolder(itemView) {
         val task: TextView = itemView.findViewById(R.id.task)
         val time: TextView = itemView.findViewById(R.id.time)
         val checkBox: CheckBox = itemView.findViewById(R.id.check_box)
         val delete: ImageButton = itemView.findViewById(R.id.delete)
+        val reminder: ImageButton = itemView.findViewById(R.id.reminder)
     }
 
     override fun onBindRealmViewHolder(holder: ViewHolder, position: Int) {
@@ -46,22 +51,30 @@ class TodoAdapter(
                 time.text = createTimeStamp(this@with.timestamp)
                 checkBox.tag = this@with.id
                 delete.tag = this@with.id
-                checkBox.alpha = 1f
-                task.alpha = 1f
-                if (this@with.completed == 1) {
-                    checkBox.isChecked = true
-                    checkBox.alpha = 0.7f
-                    task.alpha = 0.7f
-                    task.paintFlags = task.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                }
-                checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-                    Realm.getDefaultInstance().executeTransaction {
-                        it.where(TodoItem::class.java)
-                                .equalTo(TodoItem.ID, buttonView.tag as Long)
-                                .findFirst().completed = if (isChecked) 1 else 0
-                        it.close()
+
+                when (this@with.completed) {
+                    0 -> {
+                        checkBox.isChecked = false
+                        checkBox.alpha = 1f
+                        task.alpha = 1f
+                    }
+                    1 -> {
+                        checkBox.isChecked = true
+                        checkBox.alpha = 0.7f
+                        task.alpha = 0.7f
+                        task.paintFlags = task.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     }
                 }
+
+                checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                    thread {
+                        TodoItem().queryFirst {
+                            query ->
+                            query.equalTo(TodoItem.ID, buttonView.tag.toString())
+                        }?.apply { completed = if (isChecked) 1 else 0 }?.save()
+                    }
+                }
+
                 delete.setOnClickListener {
                     TodoApplication.createSnackBar(context,
                             (context as Activity).findViewById(R.id.activity_list),
@@ -69,15 +82,17 @@ class TodoAdapter(
                             Snackbar.LENGTH_SHORT).apply {
                         setAction(context.getString(R.string.yes)) {
                             this.dismiss()
-                            Realm.getDefaultInstance().executeTransaction {
-                                it.where(TodoItem::class.java)
-                                        .equalTo(TodoItem.ID, delete.tag as Long)
-                                        .findAll().deleteAllFromRealm()
-                                it.close()
+                            thread {
+                                TodoItem().delete {
+                                    query ->
+                                    query.equalTo(TodoItem.ID, view.tag.toString())
+                                }
                             }
                         }
                     }.show()
                 }
+
+
             }
         }
     }

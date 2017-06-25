@@ -8,7 +8,8 @@ import android.support.annotation.RequiresApi
 import com.biryanistudio.todo.TodoApplication
 
 import com.biryanistudio.todo.database.TodoItem
-import io.realm.Realm
+import com.vicpin.krealmextensions.save
+import kotlin.concurrent.thread
 
 class ActionTextActivity : Activity() {
 
@@ -17,13 +18,12 @@ class ActionTextActivity : Activity() {
         super.onCreate(savedInstanceState)
         val text = intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
                 .trim { it <= ' ' }
-        Realm.getDefaultInstance().executeTransaction {
-            it.createObject(TodoItem::class.java).apply {
+        thread {
+            TodoItem().apply {
                 completed = 0
                 task = text
                 timestamp = System.currentTimeMillis()
-            }
-            it.close()
+            }.save()
         }
         TodoApplication.createNotification(this, text)
         finish()

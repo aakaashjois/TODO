@@ -4,17 +4,17 @@ import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
 /**
- * Created by aakaashjois on 23/06/17
+ * Created by Aakaash Jois.
+ * 23/06/17 - 9:21 AM.
  */
 open class TodoItem(
-        @PrimaryKey var id: Int = 0,
+        @PrimaryKey var id: String = "",
         var task: String = "",
         var timestamp: Long = 0,
         var completed: Int = 0
 ) : RealmObject() {
     companion object {
         val ID = "id"
-        val TASK = "task"
         val TIMESTAMP = "timestamp"
         val COMPLETED = "completed"
     }
