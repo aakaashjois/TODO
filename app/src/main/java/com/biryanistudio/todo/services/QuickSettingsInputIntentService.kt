@@ -15,10 +15,8 @@ import com.biryanistudio.todo.userinterface.NewTaskDialogActivity
 @TargetApi(Build.VERSION_CODES.N)
 class QuickSettingsInputIntentService : TileService() {
 
-    override fun onClick() {
-        if (isLocked) unlockAndRun {
-            startActivityAndCollapse(Intent(applicationContext, NewTaskDialogActivity::class.java))
-        }
-        else startActivityAndCollapse(Intent(applicationContext, NewTaskDialogActivity::class.java))
+    override fun onClick() = if (isLocked) unlockAndRun {
+        startActivityAndCollapse(Intent(applicationContext, NewTaskDialogActivity::class.java))
     }
+    else startActivityAndCollapse(Intent(applicationContext, NewTaskDialogActivity::class.java))
 }
