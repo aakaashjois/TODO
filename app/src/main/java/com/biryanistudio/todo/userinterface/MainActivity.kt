@@ -18,12 +18,10 @@ import com.biryanistudio.todo.TodoApplication
 import com.biryanistudio.todo.adapters.TodoFragmentPagerAdapter
 import com.biryanistudio.todo.database.TodoItem
 import com.biryanistudio.todo.services.CopyListenerService
-import com.vicpin.krealmextensions.delete
-import com.vicpin.krealmextensions.query
-import com.vicpin.krealmextensions.save
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.view_pager.*
-import kotlin.concurrent.thread
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,55 +33,57 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         startService(Intent(this, CopyListenerService::class.java))
-        initUi()
-    }
-
-    private fun initUi() {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) clear.setImageDrawable(
                 ResourcesCompat.getDrawable(resources, R.drawable.done_clear_animation, null))
         else clear.setImageDrawable(
                 ResourcesCompat.getDrawable(resources, R.drawable.ic_done_all, null))
-
         clear.setOnClickListener {
-            val currentTab = tasks_view_pager.currentItem
-            val action = if (currentTab == 0) getString(R.string.complete_all_tasks)
-            else getString(R.string.clear_all_tasks)
-            val actionMessage = if (currentTab == 0) getString(R.string.complete_all_tasks_message)
-            else getString(R.string.clear_all_tasks_message)
             TodoApplication.createSnackBar(this@MainActivity, activity_list,
-                    action, Snackbar.LENGTH_LONG).apply {
+                    if (tasks_view_pager.currentItem == 0) getString(R.string.complete_all_tasks)
+                    else getString(R.string.clear_all_tasks), Snackbar.LENGTH_LONG).apply {
                 setAction(R.string.yes) {
-                    when (currentTab) {
-                        0 -> thread {
-                            TodoItem().query { query -> query.equalTo(TodoItem.COMPLETED, 0) }
-                                    .forEach {
+                    when (tasks_view_pager.currentItem) {
+                        0 -> {
+                            Realm.getDefaultInstance().use {
+                                it.executeTransactionAsync {
+                                    it.where(TodoItem::class.java).equalTo(TodoItem.COMPLETED, 0)
+                                            .findAll().forEach {
                                         it.completed = 1
-                                        it.save()
                                     }
+                                }
+                            }
                             this.dismiss()
                             TodoApplication.createSnackBar(this@MainActivity, activity_list,
-                                    actionMessage, Snackbar.LENGTH_SHORT).show()
+                                    getString(R.string.complete_all_tasks_message),
+                                    Snackbar.LENGTH_SHORT).show()
                         }
-                        1 -> thread {
-                            TodoItem().delete { query -> query.equalTo(TodoItem.COMPLETED, 1) }
+                        1 -> {
+                            Realm.getDefaultInstance().use {
+                                it.executeTransactionAsync {
+                                    it.where(TodoItem::class.java).equalTo(TodoItem.COMPLETED, 1)
+                                            .findAll().deleteAllFromRealm()
+                                }
+                            }
                             this.dismiss()
                             TodoApplication.createSnackBar(this@MainActivity, activity_list,
-                                    actionMessage, Snackbar.LENGTH_SHORT).show()
+                                    getString(R.string.clear_all_tasks_message),
+                                    Snackbar.LENGTH_SHORT).show()
                         }
                     }
                 }
             }.show()
         }
-
         task_input.setOnEditorActionListener({ textView, i, _ ->
             if (i == EditorInfo.IME_ACTION_DONE) {
-                thread {
-                    TodoItem().apply {
-                        completed = 0
-                        task = textView.text.toString().trim { it <= ' ' }
-                        timestamp = System.currentTimeMillis()
-                    }.save()
+                Realm.getDefaultInstance().use {
+                    it.executeTransaction {
+                        it.insertOrUpdate(TodoItem().apply {
+                            id = UUID.randomUUID().toString()
+                            completed = 0
+                            task = textView.text.toString().trim { it <= ' ' }
+                            timestamp = System.currentTimeMillis()
+                        })
+                    }
                 }
                 textView.text = null
                 task_input.clearFocus()
@@ -93,7 +93,6 @@ class MainActivity : AppCompatActivity() {
             }
             true
         })
-
         tasks_view_pager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int)
                     = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

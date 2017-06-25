@@ -8,8 +8,8 @@ import android.content.Intent
 import android.os.IBinder
 import com.biryanistudio.todo.TodoApplication
 import com.biryanistudio.todo.database.TodoItem
-import com.vicpin.krealmextensions.save
-import kotlin.concurrent.thread
+import io.realm.Realm
+import java.util.*
 
 class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedListener {
 
@@ -17,7 +17,7 @@ class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedList
 
     override fun onBind(intent: Intent): IBinder? = null
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager?.addPrimaryClipChangedListener(this)
         return Service.START_STICKY
@@ -39,12 +39,15 @@ class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedList
                 else clipText.replace("// Todo", "")
                 clipText = clipText.trim { it <= ' ' }
                 if (!clipText.isEmpty()) {
-                    thread {
-                        TodoItem().apply {
-                            completed = 0
-                            task = clipText
-                            timestamp = System.currentTimeMillis()
-                        }.save()
+                    Realm.getDefaultInstance().use {
+                        it.executeTransactionAsync {
+                            it.insertOrUpdate(TodoItem().apply {
+                                id = UUID.randomUUID().toString()
+                                completed = 0
+                                task = clipText
+                                timestamp = System.currentTimeMillis()
+                            })
+                        }
                     }
                     TodoApplication.createNotification(this, clipText)
                     clipboardManager?.addPrimaryClipChangedListener(this)

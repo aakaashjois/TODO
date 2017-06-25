@@ -6,12 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.biryanistudio.todo.R
-import com.biryanistudio.todo.adapters.TodoAdapter
+import com.biryanistudio.todo.adapters.TodoRecyclerViewAdapter
 import com.biryanistudio.todo.database.TodoItem
 import io.realm.Realm
 import io.realm.Sort
-import kotlinx.android.synthetic.main.empty_view_holder.view.*
+import kotlinx.android.synthetic.main.list_fragment.*
 import kotlinx.android.synthetic.main.list_fragment.view.*
+import kotlin.properties.Delegates.notNull
 
 /**
  * Created by Aakaash Jois.
@@ -20,7 +21,8 @@ import kotlinx.android.synthetic.main.list_fragment.view.*
 
 class TodoFragment : Fragment() {
 
-    var page: Int? = null
+    var page: Int by notNull()
+    lateinit var realm: Realm
 
     companion object {
 
@@ -38,20 +40,40 @@ class TodoFragment : Fragment() {
         page = arguments.getFloat(PAGE, -1f).toInt()
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        //TODO: Replace Realm with Realm extensions
-        val realm = Realm.getDefaultInstance()
-        val realmResults = realm.where(TodoItem::class.java)
-                ?.equalTo(TodoItem.COMPLETED, page)
-                ?.findAllSorted(TodoItem.TIMESTAMP, Sort.DESCENDING)
-        return inflater.inflate(R.layout.list_fragment, container, false).apply {
-            when (page) {
-                0 -> empty_view.text = context.getString(R.string.text_not_added_pending_yet)
-                1 -> empty_view.text = context.getString(R.string.text_not_completed)
+        realm = Realm.getDefaultInstance()
+        val realmResults = realm.where(TodoItem::class.java).equalTo(TodoItem.COMPLETED, page)
+                .findAllSorted(TodoItem.TIMESTAMP, Sort.DESCENDING)
+        val view = inflater.inflate(R.layout.list_fragment, container, false).apply {
+            recycler_view.adapter = TodoRecyclerViewAdapter(activity, realmResults)
+            empty_view.text = when (page) {
+                0 -> context.getString(R.string.text_not_added_pending_yet)
+                1 -> context.getString(R.string.text_not_completed)
+                else -> null
             }
-            recycler_view.setAdapter(TodoAdapter(activity, realmResults, true, false))
+            if (realmResults.size == 0) {
+                recycler_view.visibility = View.GONE
+                empty_view.visibility = View.VISIBLE
+            } else {
+                recycler_view.visibility = View.VISIBLE
+                empty_view.visibility = View.GONE
+            }
         }
+        realmResults.addChangeListener({ result ->
+            if (result.size == 0) {
+                recycler_view.visibility = View.GONE
+                empty_view.visibility = View.VISIBLE
+            } else {
+                recycler_view.visibility = View.VISIBLE
+                empty_view.visibility = View.GONE
+            }
+        })
+        return view
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
     }
 }
