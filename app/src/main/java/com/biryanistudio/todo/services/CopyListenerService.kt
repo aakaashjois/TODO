@@ -6,17 +6,18 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import com.biryanistudio.todo.database.DbTransactions
-import com.biryanistudio.todo.userinterface.UiUtils
+import com.biryanistudio.todo.TodoApplication
+import com.biryanistudio.todo.database.TodoItem
+import io.realm.Realm
+import java.util.*
 
 class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedListener {
+
     private var clipboardManager: ClipboardManager? = null
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
-    }
+    override fun onBind(intent: Intent): IBinder? = null
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager?.addPrimaryClipChangedListener(this)
         return Service.START_STICKY
@@ -27,35 +28,31 @@ class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedList
         clipboardManager?.removePrimaryClipChangedListener(this)
         if (clipData?.description?.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN) as Boolean) {
             var clipText = clipData.getItemAt(0).text.toString()
-            if (clipText.contains("//TODO")
-                    || clipText.contains("// TODO")
-                    || clipText.contains("//todo")
-                    || clipText.contains("// todo")
-                    || clipText.contains("//Todo")
-                    || clipText.contains("// Todo")) {
-                clipText = if (clipText.contains("//TODO"))
-                    clipText.replace("//TODO", "")
-                else if (clipText.contains("// TODO"))
-                    clipText.replace("// TODO", "")
-                else if (clipText.contains("//todo"))
-                    clipText.replace("//todo", "")
-                else if (clipText.contains("// todo"))
-                    clipText.replace("// todo", "")
-                else if (clipText.contains("//Todo"))
-                    clipText.replace("//Todo", "")
-                else
-                    clipText.replace("// Todo", "")
+            if (clipText.contains("//TODO") || clipText.contains("// TODO")
+                    || clipText.contains("//todo") || clipText.contains("// todo")
+                    || clipText.contains("//Todo") || clipText.contains("// Todo")) {
+                clipText = if (clipText.contains("//TODO")) clipText.replace("//TODO", "")
+                else if (clipText.contains("// TODO")) clipText.replace("// TODO", "")
+                else if (clipText.contains("//todo")) clipText.replace("//todo", "")
+                else if (clipText.contains("// todo")) clipText.replace("// todo", "")
+                else if (clipText.contains("//Todo")) clipText.replace("//Todo", "")
+                else clipText.replace("// Todo", "")
                 clipText = clipText.trim { it <= ' ' }
-                if (!clipText.trim { it <= ' ' }.isEmpty()) {
-                    saveTextToDatabase(clipText)
+                if (!clipText.isEmpty()) {
+                    Realm.getDefaultInstance().use {
+                        it.executeTransactionAsync {
+                            it.insertOrUpdate(TodoItem().apply {
+                                id = UUID.randomUUID().toString()
+                                completed = 0
+                                task = clipText
+                                timestamp = System.currentTimeMillis()
+                            })
+                        }
+                    }
+                    TodoApplication.createNotification(this, clipText)
+                    clipboardManager?.addPrimaryClipChangedListener(this)
                 }
             }
         }
-    }
-
-    private fun saveTextToDatabase(text: String) {
-        val newRowId = DbTransactions.writeTask(this, text)
-        if (newRowId != -1L) UiUtils.createNotification(this, text)
-        clipboardManager?.addPrimaryClipChangedListener(this)
     }
 }

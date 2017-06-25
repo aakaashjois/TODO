@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
-
-import com.biryanistudio.todo.database.DbTransactions
+import com.biryanistudio.todo.TodoApplication
+import com.biryanistudio.todo.database.TodoItem
+import io.realm.Realm
+import java.util.*
 
 class ActionTextActivity : Activity() {
 
@@ -15,8 +17,17 @@ class ActionTextActivity : Activity() {
         super.onCreate(savedInstanceState)
         val text = intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT).toString()
                 .trim { it <= ' ' }
-        DbTransactions.writeTask(this, text)
-        UiUtils.createNotification(this, text)
+        Realm.getDefaultInstance().use {
+            it.executeTransactionAsync {
+                it.insertOrUpdate(TodoItem().apply {
+                    id = UUID.randomUUID().toString()
+                    completed = 0
+                    task = text
+                    timestamp = System.currentTimeMillis()
+                })
+            }
+        }
+        TodoApplication.createNotification(this, text)
         finish()
     }
 }

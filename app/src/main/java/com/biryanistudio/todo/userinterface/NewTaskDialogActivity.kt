@@ -4,11 +4,12 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.inputmethod.EditorInfo
-
 import com.biryanistudio.todo.R
-import com.biryanistudio.todo.database.DbTransactions
-
+import com.biryanistudio.todo.TodoApplication
+import com.biryanistudio.todo.database.TodoItem
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_new_task_dialog.*
+import java.util.*
 
 class NewTaskDialogActivity : AppCompatActivity() {
 
@@ -24,9 +25,18 @@ class NewTaskDialogActivity : AppCompatActivity() {
                 dialog_task_input.setOnEditorActionListener { textView, i, _ ->
                     if (i == EditorInfo.IME_ACTION_DONE) {
                         val text = textView.text.toString().trim { it <= ' ' }
-                        DbTransactions.writeTask(this@NewTaskDialogActivity, text)
+                        Realm.getDefaultInstance().use {
+                            it.executeTransaction {
+                                it.insertOrUpdate(TodoItem().apply {
+                                    id = UUID.randomUUID().toString()
+                                    completed = 0
+                                    task = text
+                                    timestamp = System.currentTimeMillis()
+                                })
+                            }
+                        }
                         this.dismiss()
-                        UiUtils.createNotification(this@NewTaskDialogActivity, text)
+                        TodoApplication.createNotification(this@NewTaskDialogActivity, text)
                         finish()
                     }
                     true

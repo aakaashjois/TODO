@@ -22,7 +22,6 @@
     <!-- App shortcut and QS Tile string -->
     <string name="todo_shortcut">New TODO</string>
 
-
     <!-- Notification string -->
     <string name="todo_added">"New TODO Added"</string>
 
