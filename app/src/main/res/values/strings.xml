@@ -12,6 +12,7 @@
     <string name="complete_all_tasks_message">Awesome! Enjoy your day!</string>
     <string name="clear_all_tasks_message">Cleared! The list is clean!</string>
     <string name="delete_current_todo">Delete this TODO?</string>
+    <string name="reminder_for_todo">Set a reminder</string>
     <string name="yes">Yes</string>
 
     <!-- Hint strings -->
