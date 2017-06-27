@@ -2,12 +2,13 @@ package com.biryanistudio.todo.adapters
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import com.biryanistudio.todo.R
@@ -33,7 +34,7 @@ class TodoRecyclerViewAdapter(private val context: Context,
     class TodoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val task: TextView = itemView.findViewById(R.id.task)
         val time: TextView = itemView.findViewById(R.id.time)
-        val checkBox: CheckBox = itemView.findViewById(R.id.check_box)
+        val checkBox: ImageButton = itemView.findViewById(R.id.check_box)
         val delete: ImageButton = itemView.findViewById(R.id.delete)
         val reminder: ImageButton = itemView.findViewById(R.id.reminder)
     }
@@ -47,25 +48,26 @@ class TodoRecyclerViewAdapter(private val context: Context,
                 delete.tag = this@with?.id
                 when (this@with?.completed) {
                     0 -> {
-                        checkBox.isChecked = false
+                        checkBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle))
                         checkBox.alpha = 1f
                         task.alpha = 1f
                     }
                     1 -> {
-                        checkBox.isChecked = true
-                        checkBox.alpha = 0.7f
+                        checkBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_uncheck_circle))
                         task.alpha = 0.7f
-                        task.paintFlags = task.paintFlags or
-                                android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+                        task.paintFlags = task.paintFlags or STRIKE_THRU_TEXT_FLAG
                     }
                 }
-                checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                checkBox.setOnClickListener { view ->
                     Realm.getDefaultInstance().use {
                         it.executeTransactionAsync {
                             it.where(TodoItem::class.java)
-                                    .equalTo(TodoItem.ID, buttonView.tag.toString())
+                                    .equalTo(TodoItem.ID, view.tag.toString())
                                     .findFirst().apply {
-                                this.completed = if (isChecked) 1 else 0
+                                when (completed) {
+                                    0 -> completed = 1
+                                    1 -> completed = 0
+                                }
                             }
                         }
                     }
