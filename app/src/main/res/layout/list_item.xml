@@ -49,7 +49,7 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="@dimen/list_item_button_margin"
         android:background="@android:color/transparent"
-        android:contentDescription="@string/delete_current_todo"
+        android:contentDescription="@string/reminder_for_todo"
         app:srcCompat="@drawable/ic_add_alarm" />
 
     <ImageButton
@@ -60,6 +60,6 @@
         android:layout_margin="@dimen/list_item_button_margin"
         android:background="@android:color/transparent"
         android:contentDescription="@string/delete_current_todo"
-        app:srcCompat="@drawable/ic_delete_item" />
+        app:srcCompat="@drawable/ic_delete" />
 
 </LinearLayout>
