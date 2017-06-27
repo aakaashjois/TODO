@@ -8,24 +8,24 @@ import android.content.Intent
 import android.os.IBinder
 import com.biryanistudio.todo.TodoApplication
 import com.biryanistudio.todo.database.TodoItem
-import io.realm.Realm
-import java.util.*
+import com.biryanistudio.todo.database.TransactionsHelper
+import kotlin.properties.Delegates.notNull
 
 class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedListener {
 
-    private var clipboardManager: ClipboardManager? = null
+    private var clipboardManager: ClipboardManager by notNull()
 
     override fun onBind(intent: Intent): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboardManager?.addPrimaryClipChangedListener(this)
+        clipboardManager.addPrimaryClipChangedListener(this@CopyListenerService)
         return Service.START_STICKY
     }
 
     override fun onPrimaryClipChanged() {
-        val clipData = clipboardManager?.primaryClip
-        clipboardManager?.removePrimaryClipChangedListener(this)
+        val clipData = clipboardManager.primaryClip
+        clipboardManager.removePrimaryClipChangedListener(this)
         if (clipData?.description?.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN) as Boolean) {
             var clipText = clipData.getItemAt(0).text.toString()
             if (clipText.contains("//TODO") || clipText.contains("// TODO")
@@ -39,18 +39,10 @@ class CopyListenerService : Service(), ClipboardManager.OnPrimaryClipChangedList
                 else clipText.replace("// Todo", "")
                 clipText = clipText.trim { it <= ' ' }
                 if (!clipText.isEmpty()) {
-                    Realm.getDefaultInstance().use {
-                        it.executeTransactionAsync {
-                            it.insertOrUpdate(TodoItem().apply {
-                                id = UUID.randomUUID().toString()
-                                completed = 0
-                                task = clipText
-                                timestamp = System.currentTimeMillis()
-                            })
-                        }
-                    }
-                    TodoApplication.createNotification(this, clipText)
-                    clipboardManager?.addPrimaryClipChangedListener(this)
+                    TransactionsHelper.addItem(TodoItem(task = clipText, completed = 0,
+                            timestamp = System.currentTimeMillis()))
+                    TodoApplication.createNotification(this@CopyListenerService, clipText)
+                    clipboardManager.addPrimaryClipChangedListener(this@CopyListenerService)
                 }
             }
         }

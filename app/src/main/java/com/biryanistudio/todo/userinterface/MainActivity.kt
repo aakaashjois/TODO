@@ -17,11 +17,11 @@ import com.biryanistudio.todo.R
 import com.biryanistudio.todo.TodoApplication
 import com.biryanistudio.todo.adapters.TodoFragmentPagerAdapter
 import com.biryanistudio.todo.database.TodoItem
+import com.biryanistudio.todo.database.TransactionsHelper
 import com.biryanistudio.todo.services.CopyListenerService
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.view_pager.*
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -75,16 +75,9 @@ class MainActivity : AppCompatActivity() {
         }
         task_input.setOnEditorActionListener({ textView, i, _ ->
             if (i == EditorInfo.IME_ACTION_DONE) {
-                Realm.getDefaultInstance().use {
-                    it.executeTransaction {
-                        it.insertOrUpdate(TodoItem().apply {
-                            id = UUID.randomUUID().toString()
-                            completed = 0
-                            task = textView.text.toString().trim { it <= ' ' }
-                            timestamp = System.currentTimeMillis()
-                        })
-                    }
-                }
+                TransactionsHelper.addItem(
+                        TodoItem(task = textView.text.toString().trim { it <= ' ' }, completed = 0,
+                                timestamp = System.currentTimeMillis()))
                 textView.text = null
                 task_input.clearFocus()
                 activity_list.requestFocus()

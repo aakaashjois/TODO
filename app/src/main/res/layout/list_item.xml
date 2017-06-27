@@ -7,14 +7,6 @@
     android:layout_marginTop="@dimen/list_item_vertical_margin"
     android:orientation="horizontal">
 
-    <CheckBox
-        android:id="@+id/check_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/list_item_horizontal_margin"
-        android:layout_marginStart="@dimen/list_item_horizontal_margin" />
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -40,17 +32,6 @@
             android:textStyle="italic" />
 
     </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/reminder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/list_item_horizontal_margin"
-        android:layout_marginStart="@dimen/list_item_horizontal_margin"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/delete_current_todo"
-        app:srcCompat="@drawable/ic_add_alarm" />
 
     <ImageButton
         android:id="@+id/delete"
