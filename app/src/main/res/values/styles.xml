@@ -5,33 +5,5 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textViewStyle">@style/HandWritingTextView</item>
     </style>
-
-    <style name="SplashTheme" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/splash_background</item>
-    </style>
-
-    <style name="HandWritingTextView" parent="android:Widget.TextView">
-        <item name="android:fontFamily">casual</item>
-    </style>
-
-    <style name="HandWritingTabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabTextAppearance">@style/HandWritingTextAppearance</item>
-    </style>
-
-    <style name="HandWritingTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:fontFamily">casual</item>
-    </style>
-
-    <style name="NewTaskDialog" parent="Theme.AppCompat.Dialog.Alert">
-        <item name="android:background">@color/colorPrimaryDark</item>
-    </style>
-
-    <style name="HandWritingEditTextTheme" parent="AppTheme">
-        <item name="colorControlNormal">@color/colorPrimary</item>
-        <item name="colorControlActivated">@color/colorPrimary</item>
-        <item name="colorControlHighlight">@color/colorPrimary</item>
-    </style>
-
 </resources>
